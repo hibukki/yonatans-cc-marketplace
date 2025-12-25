@@ -1,23 +1,11 @@
 {
   "name": "quick-review",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "Auto-triggers a quick code review after git commits",
   "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/inject-review.sh",
-            "timeout": 5
-          }
-        ]
-      }
-    ],
     "PostToolUse": [
       {
-        "matcher": "Bash",
+        "matcher": "*",
         "hooks": [
           {
             "type": "command",

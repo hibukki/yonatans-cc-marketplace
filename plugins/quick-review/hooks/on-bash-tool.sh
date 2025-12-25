@@ -11,44 +11,68 @@ mkdir -p "$REVIEW_DIR"
 input=$(cat)
 echo "$(date): PostToolUse hook called" >> "$LOG"
 
-# Extract the command and response
+# --- PART 1: Check for and inject any completed reviews ---
+inject_output=""
+if [[ -d "$REVIEW_DIR" ]]; then
+  for review_file in "$REVIEW_DIR"/review-*.txt; do
+    [[ -e "$review_file" ]] || continue
+
+    filename=$(basename "$review_file")
+    commit_sha="${filename#review-}"
+    commit_sha="${commit_sha%.txt}"
+
+    review_content=$(cat "$review_file" 2>/dev/null || echo "Error reading review")
+    inject_output="${inject_output}
+
+=== Review for commit ${commit_sha} ===
+${review_content}
+"
+    rm -f "$review_file"
+    echo "$(date): Injected review for $commit_sha" >> "$LOG"
+  done
+fi
+
+# --- PART 2: If this was a git commit, spawn a new review ---
 command=$(echo "$input" | jq -r '.tool_input.command // ""')
 stdout=$(echo "$input" | jq -r '.tool_response.stdout // ""')
+spawned_msg=""
 
-# Check if this was a git commit command
 if [[ "$command" == *"git commit"* ]]; then
   # Extract commit SHA from output like "[main abc1234] commit message"
-  commit_sha=$(echo "$stdout" | grep -oE '\[[a-zA-Z0-9_/-]+ [a-f0-9]+\]' | grep -oE '[a-f0-9]{7,}' | head -1)
+  new_commit_sha=$(echo "$stdout" | grep -oE '\[[a-zA-Z0-9_/-]+ [a-f0-9]+\]' | grep -oE '[a-f0-9]{7,}' | head -1)
 
-  if [[ -n "$commit_sha" ]]; then
-    echo "$(date): Detected commit $commit_sha, spawning background review" >> "$LOG"
+  if [[ -n "$new_commit_sha" ]]; then
+    echo "$(date): Detected commit $new_commit_sha, spawning background review" >> "$LOG"
 
-    # Spawn claude -p in background to review the commit
+    # Spawn review using the quick-reviewer agent with read-only permissions
     (
-      claude -p "Review the git commit $commit_sha. Run: git show $commit_sha
+      claude -p "Review commit $new_commit_sha" \
+        --agent quick-reviewer \
+        --permission-mode plan \
+        2>>"$LOG" \
+        > "$REVIEW_DIR/review-$new_commit_sha.tmp"
 
-Look for: obvious bugs, security issues, forgotten debug code, broken imports.
-Skip: style nitpicks, naming suggestions, refactoring ideas.
-
-Be concise. If no issues found, just say 'No issues found.'" \
-        --dangerously-skip-permissions 2>>"$LOG" \
-        > "$REVIEW_DIR/review-$commit_sha.tmp"
-
-      # Atomic rename - file only appears as .txt when review is complete
-      mv "$REVIEW_DIR/review-$commit_sha.tmp" "$REVIEW_DIR/review-$commit_sha.txt"
-      echo "$(date): Review for $commit_sha completed" >> "$LOG"
+      mv "$REVIEW_DIR/review-$new_commit_sha.tmp" "$REVIEW_DIR/review-$new_commit_sha.txt"
+      echo "$(date): Review for $new_commit_sha completed" >> "$LOG"
     ) &
 
-    # Output confirmation that review was spawned
-    cat <<EOF
+    spawned_msg="[Spawned background review for commit $new_commit_sha]"
+  fi
+fi
+
+# --- PART 3: Output combined additionalContext ---
+if [[ -n "$inject_output" || -n "$spawned_msg" ]]; then
+  combined="${inject_output}${spawned_msg}"
+  escaped=$(echo "$combined" | jq -Rs .)
+
+  cat <<EOF
 {
   "hookSpecificOutput": {
     "hookEventName": "PostToolUse",
-    "additionalContext": "[DEBUG] PostToolUse: Spawned background review for commit $commit_sha"
+    "additionalContext": ${escaped}
   }
 }
 EOF
-  fi
 fi
 
 exit 0
