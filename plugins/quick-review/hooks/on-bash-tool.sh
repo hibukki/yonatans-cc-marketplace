@@ -24,8 +24,10 @@ if [[ -d "$REVIEW_DIR" ]]; then
     review_content=$(cat "$review_file" 2>/dev/null || echo "Error reading review")
     inject_output="${inject_output}
 
-=== Review for commit ${commit_sha} ===
+=== Review ready for commit ${commit_sha}. Reminder: These are only suggestions, you can pick what to do. Default prioritization: Fix things in-scope even if low-severity ===
+<Review>
 ${review_content}
+</Review>
 "
     rm -f "$review_file"
     echo "$(date): Injected review for $commit_sha" >> "$LOG"
