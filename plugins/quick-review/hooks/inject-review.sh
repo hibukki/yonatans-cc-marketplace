@@ -4,6 +4,16 @@ set -euo pipefail
 REVIEW_DIR="/tmp/claude-reviews"
 LOG="/tmp/hook-debug.log"
 
+# Always output a debug message to verify PreToolUse injection works
+cat <<'EOF'
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PreToolUse",
+    "additionalContext": "[DEBUG] PreToolUse hook fired"
+  }
+}
+EOF
+
 # Check if any review files exist
 if [[ ! -d "$REVIEW_DIR" ]]; then
   exit 0

@@ -39,7 +39,15 @@ Be concise. If no issues found, just say 'No issues found.'" \
       echo "$(date): Review for $commit_sha completed" >> "$LOG"
     ) &
 
-    # Don't output anything - the PreToolUse hook will inject results later
+    # Output confirmation that review was spawned
+    cat <<EOF
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PostToolUse",
+    "additionalContext": "[DEBUG] PostToolUse: Spawned background review for commit $commit_sha"
+  }
+}
+EOF
   fi
 fi
 
