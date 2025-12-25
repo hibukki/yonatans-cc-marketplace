@@ -32,8 +32,10 @@ Skip: style nitpicks, naming suggestions, refactoring ideas.
 
 Be concise. If no issues found, just say 'No issues found.'" \
         --dangerously-skip-permissions 2>>"$LOG" \
-        > "$REVIEW_DIR/review-$commit_sha.txt"
+        > "$REVIEW_DIR/review-$commit_sha.tmp"
 
+      # Atomic rename - file only appears as .txt when review is complete
+      mv "$REVIEW_DIR/review-$commit_sha.tmp" "$REVIEW_DIR/review-$commit_sha.txt"
       echo "$(date): Review for $commit_sha completed" >> "$LOG"
     ) &
 
