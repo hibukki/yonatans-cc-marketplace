@@ -1,5 +1,6 @@
 {
   "name": "quick-review",
   "version": "0.1.0",
-  "description": "Auto-triggers a quick code review after git commits"
+  "description": "Auto-triggers a quick code review after git commits",
+  "hooks": "../hooks/hooks.json"
 }
