@@ -1,0 +1,17 @@
+{
+  "name": "yonatans-cc-plugin",
+  "owner": {
+    "name": "Yonatan"
+  },
+  "metadata": {
+    "description": "Yonatan's Claude Code plugins",
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "quick-review",
+      "source": "./plugins/quick-review",
+      "description": "Auto-triggers a quick code review after git commits"
+    }
+  ]
+}
