@@ -15,6 +15,8 @@ if [[ "$command" == *"git commit"* ]]; then
   "systemMessage": "A git commit just completed. Please spawn the quick-reviewer agent in the background (using the Task tool with run_in_background: true) to review the commit. Continue with your current work - the review will complete asynchronously."
 }
 EOF
+else
+  echo "Debug: no commit detected in command: $command" >&2
 fi
 
 # Exit successfully (don't block anything)
