@@ -2,7 +2,6 @@
 set -euo pipefail
 
 LOG="/tmp/hook-debug.log"
-REVIEW_DIR="/tmp/claude-reviews"
 
 # Require jq
 if ! command -v jq &>/dev/null; then
@@ -10,12 +9,18 @@ if ! command -v jq &>/dev/null; then
   exit 1
 fi
 
+# Read JSON input from stdin
+input=$(cat)
+
+# Namespace reviews by workspace (cwd) to avoid cross-contamination
+cwd=$(echo "$input" | jq -r '.cwd // ""')
+cwd_hash=$(echo "$cwd" | md5sum | cut -c1-8)
+REVIEW_DIR="/tmp/claude-reviews-${cwd_hash}"
+
 # Ensure review directory exists
 mkdir -p "$REVIEW_DIR"
 
-# Read JSON input from stdin
-input=$(cat)
-echo "$(date): PostToolUse hook called" >> "$LOG"
+echo "$(date): PostToolUse hook called (workspace: $cwd_hash)" >> "$LOG"
 
 # --- PART 1: Check for and inject any completed reviews ---
 inject_output=""
