@@ -71,7 +71,7 @@ if [[ "$command" == *"git commit"* ]]; then
 
       mv "$REVIEW_DIR/review-$new_commit_sha.tmp" "$REVIEW_DIR/review-$new_commit_sha.txt"
       echo "$(date): Review for $new_commit_sha completed" >> "$LOG"
-    ) &
+    ) </dev/null &  # detach stdin so parent doesn't wait for background process
 
     spawned_msg="[Spawned background review for commit $new_commit_sha]"
   fi
