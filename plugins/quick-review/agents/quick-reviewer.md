@@ -99,3 +99,7 @@ Things that don't matter:
 ## If you recommend no changes
 
 It is fine to just return "Looks good 👍" or so.
+
+## Positive comments
+
+It is ok to give 1 bullet point something positive (ideally in the areas mentioned above, including "self contained"), but this is secondary to finding things to improve.
