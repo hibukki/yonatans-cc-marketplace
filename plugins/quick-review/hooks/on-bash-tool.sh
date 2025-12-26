@@ -69,12 +69,12 @@ if [[ "$command" == *"git commit"* ]]; then
   fi
 fi
 
-# --- PART 3: Output combined additionalContext ---
-if [[ -n "$inject_output" || -n "$spawned_msg" ]]; then
-  combined="${inject_output}${spawned_msg}"
-  escaped=$(echo "$combined" | jq -Rs .)
+# --- PART 3: Output additionalContext (always output something for debugging) ---
+debug_msg="[quick-review hook ran]"
+combined="${inject_output}${spawned_msg}${debug_msg}"
+escaped=$(echo "$combined" | jq -Rs .)
 
-  cat <<EOF
+cat <<EOF
 {
   "hookSpecificOutput": {
     "hookEventName": "PostToolUse",
@@ -82,6 +82,5 @@ if [[ -n "$inject_output" || -n "$spawned_msg" ]]; then
   }
 }
 EOF
-fi
 
 exit 0
