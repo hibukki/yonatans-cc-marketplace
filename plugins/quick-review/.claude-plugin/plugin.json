@@ -1,7 +1,8 @@
 {
   "name": "quick-review",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "Auto-triggers a quick code review after git commits",
+  "commands": "./commands/",
   "hooks": {
     "PostToolUse": [
       {
