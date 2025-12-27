@@ -1,8 +1,9 @@
 {
   "name": "quick-review",
-  "version": "0.5.15",
+  "version": "0.5.16",
   "description": "Auto-triggers a quick code review after git commits",
   "commands": "./commands/",
+  "skills": "./skills/",
   "hooks": {
     "SessionStart": [
       {
