@@ -9,7 +9,7 @@ conditions:
     pattern: pyproject\.toml$
   - field: new_text
     operator: regex_match
-    pattern: [>=<~]=?\s*\d
+    pattern: '[>=<~]=?\s*\d'
 ---
 
 Use `uv add <pkg>` instead of editing pyproject.toml directly.

@@ -9,7 +9,7 @@ conditions:
     pattern: package\.json$
   - field: new_text
     operator: regex_match
-    pattern: ":\s*"[\^~]?\d
+    pattern: '":\s*"[\^~]?\d'
 ---
 
 Use `npm install <pkg>` or `pnpm add <pkg>` instead of editing package.json directly.
