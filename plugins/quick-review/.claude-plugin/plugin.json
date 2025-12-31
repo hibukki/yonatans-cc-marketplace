@@ -1,6 +1,6 @@
 {
   "name": "quick-review",
-  "version": "0.5.19",
+  "version": "0.5.20",
   "description": "Auto-triggers a quick code review after git commits",
   "commands": "./commands/",
   "skills": "./skills/",
