@@ -13,7 +13,7 @@ if [[ ! "$file_path" =~ \.(js|ts|jsx|tsx|py|go|java|c|cpp|h|hpp|rs|swift|kt)$ ]]
 fi
 
 # Filter out shebangs
-filtered=$(echo "$new_text" | grep -vE '^#!')
+filtered=$(echo "$new_text" | grep -vE '^#!' || true)
 
 # Check for comment patterns
 has_double_slash=$(echo "$filtered" | grep -qE '//\s*\w' && echo 1 || echo 0)
