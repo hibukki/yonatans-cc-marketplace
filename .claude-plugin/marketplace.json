@@ -10,7 +10,7 @@
   "plugins": [
     {
       "name": "quick-review",
-      "source": "./plugins/quick-review",
+      "source": "./quick-review",
       "description": "Auto-triggers a quick code review after git commits"
     }
   ]
