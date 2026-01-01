@@ -1,6 +1,6 @@
 {
   "name": "quick-review",
-  "version": "0.5.37",
+  "version": "0.5.38",
   "description": "Auto-triggers a quick code review after git commits",
   "commands": "./commands/",
   "skills": "./skills/",
@@ -60,6 +60,17 @@
             "type": "command",
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/on-bash-tool.sh",
             "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/on-stop.sh"
           }
         ]
       }

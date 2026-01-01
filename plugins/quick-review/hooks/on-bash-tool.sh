@@ -1,52 +1,22 @@
 #!/bin/bash
 set -euo pipefail
 
-LOG="/tmp/hook-debug.log"
+SCRIPT_DIR="$(dirname "$0")"
+source "$SCRIPT_DIR/lib-review.sh"
 
-# Require jq
-if ! command -v jq &>/dev/null; then
-  echo "Error: jq is required but not installed. Install with: brew install jq" >&2
-  exit 1
-fi
+LOG="/tmp/hook-debug.log"
 
 # Read JSON input from stdin
 input=$(cat)
-
-# Namespace reviews by session ID to avoid cross-contamination
-session_id=$(echo "$input" | jq -r '.session_id')
-if [[ -z "$session_id" || "$session_id" == "null" ]]; then
-  echo "Error: session_id not found in hook input" >&2
-  exit 1
-fi
-REVIEW_DIR="/tmp/claude-reviews-${session_id}"
+REVIEW_DIR=$(get_review_dir "$input")
 
 # Ensure review directory exists
 mkdir -p "$REVIEW_DIR"
 
-echo "$(date): PostToolUse hook called (session: $session_id)" >> "$LOG"
+echo "$(date): PostToolUse hook called" >> "$LOG"
 
 # --- Check for and inject any completed reviews ---
-inject_output=""
-if [[ -d "$REVIEW_DIR" ]]; then
-  for review_file in "$REVIEW_DIR"/review-*.txt; do
-    [[ -e "$review_file" ]] || continue
-
-    filename=$(basename "$review_file")
-    commit_sha="${filename#review-}"
-    commit_sha="${commit_sha%.txt}"
-
-    review_content=$(cat "$review_file")
-    inject_output="${inject_output}
-
-=== Review ready for commit ${commit_sha}. Reminder: These are only suggestions, you can pick what to do. Default prioritization: Fix things in-scope even if low-severity ===
-<Review>
-${review_content}
-</Review>
-"
-    rm -f "$review_file"
-    echo "$(date): Injected review for $commit_sha" >> "$LOG"
-  done
-fi
+inject_output=$(get_completed_reviews "$REVIEW_DIR")
 
 # --- If this was a git commit, spawn a new review ---
 command=$(echo "$input" | jq -r '.tool_input.command // ""')
