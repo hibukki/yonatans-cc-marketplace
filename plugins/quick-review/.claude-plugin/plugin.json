@@ -1,6 +1,6 @@
 {
   "name": "quick-review",
-  "version": "0.5.26",
+  "version": "0.5.27",
   "description": "Auto-triggers a quick code review after git commits",
   "commands": "./commands/",
   "skills": "./skills/",
@@ -26,6 +26,15 @@
           {
             "type": "command",
             "command": "echo '{\"systemMessage\": \"Tip: If WebFetch is filtering out info you want, you can download the entire webpage and launch a sub task to get info from that downloaded file.\"}'"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/warn-large-commit.sh"
           }
         ]
       },
