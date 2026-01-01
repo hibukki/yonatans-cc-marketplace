@@ -12,7 +12,7 @@ if [ "$hookify_rules" -gt 0 ]; then
   if ! claude --print-plugins 2>/dev/null | grep -q "hookify"; then
     cat <<'EOF'
 {
-  "systemMessage": "⚠️ This plugin includes hookify rules but the hookify plugin doesn't appear to be installed. The rules in hooks/hookify.*.local.md won't work. Consider installing hookify or ask the user if they want to."
+  "systemMessage": "⚠️ This plugin includes hookify rules but the hookify plugin doesn't appear to be installed. The rules in hooks/hookify.*.local.md won't work. To install: /plugin install hookify@claude-plugins-official"
 }
 EOF
     echo "⚠️ quick-review plugin: Found hookify rules but hookify plugin not detected. Some hooks may not work." >&2
