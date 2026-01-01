@@ -17,9 +17,10 @@ if echo "$new_text" | grep -qE '":\s*"[\^~]?[0-9]'; then
   cat <<'EOF'
 {
   "hookSpecificOutput": {
-    "permissionDecision": "deny"
-  },
-  "systemMessage": "Use `npm install <pkg>` or `pnpm add <pkg>` instead of editing package.json directly."
+    "hookEventName": "PreToolUse",
+    "permissionDecision": "deny",
+    "permissionDecisionReason": "Use `npm install <pkg>` or `pnpm add <pkg>` instead of editing package.json directly."
+  }
 }
 EOF
   exit 0

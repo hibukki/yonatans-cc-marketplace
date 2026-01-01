@@ -17,9 +17,10 @@ if echo "$new_text" | grep -qE '[>=<~]=?\s*[0-9]'; then
   cat <<'EOF'
 {
   "hookSpecificOutput": {
-    "permissionDecision": "deny"
-  },
-  "systemMessage": "Use `uv add <pkg>` instead of editing pyproject.toml directly."
+    "hookEventName": "PreToolUse",
+    "permissionDecision": "deny",
+    "permissionDecisionReason": "Use `uv add <pkg>` instead of editing pyproject.toml directly."
+  }
 }
 EOF
   exit 0
