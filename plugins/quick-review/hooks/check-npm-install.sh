@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+# PreToolUse output format: https://docs.anthropic.com/en/docs/claude-code/hooks
+
 input=$(cat)
 file_path=$(echo "$input" | jq -r '.tool_input.file_path // .tool_input.p // ""')
 new_text=$(echo "$input" | jq -r '.tool_input.new_string // .tool_input.content // ""')
@@ -14,8 +16,10 @@ fi
 if echo "$new_text" | grep -qE '":\s*"[\^~]?[0-9]'; then
   cat <<'EOF'
 {
-  "decision": "block",
-  "reason": "Use `npm install <pkg>` or `pnpm add <pkg>` instead of editing package.json directly."
+  "hookSpecificOutput": {
+    "permissionDecision": "deny"
+  },
+  "systemMessage": "Use `npm install <pkg>` or `pnpm add <pkg>` instead of editing package.json directly."
 }
 EOF
   exit 0
