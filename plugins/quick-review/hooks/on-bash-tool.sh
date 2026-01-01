@@ -61,6 +61,13 @@ if [[ "$command" == *"git commit"* ]]; then
   if [[ -n "$new_commit_sha" ]]; then
     echo "$(date): Detected commit $new_commit_sha, spawning background review" >> "$LOG"
 
+    # Check diff size and warn if large
+    diff_lines=$(git show --stat "$new_commit_sha" | tail -1 | grep -oE '[0-9]+ insertion|[0-9]+ deletion' | grep -oE '[0-9]+' | paste -sd+ - | bc 2>/dev/null || echo "0")
+    if [[ "$diff_lines" -gt 300 ]]; then
+      spawned_msg="[⚠️ Large commit: ${diff_lines} lines changed. As you know, it is nice to have small self-contained commits. This message was triggered by the last commit, but it is only a reminder, use your own judgement.]
+"
+    fi
+
     # Spawn review using the quick-reviewer agent
     (
       claude -p "Review commit $new_commit_sha" \
