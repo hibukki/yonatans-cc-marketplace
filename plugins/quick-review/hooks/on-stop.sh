@@ -15,8 +15,7 @@ if [[ -n "$completed" ]]; then
   cat <<EOF
 {
   "decision": "block",
-  "reason": "Reviews ready",
-  "additionalContext": ${escaped}
+  "reason": ${escaped}
 }
 EOF
 else
