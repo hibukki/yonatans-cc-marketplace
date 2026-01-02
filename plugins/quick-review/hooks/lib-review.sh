@@ -29,7 +29,7 @@ get_completed_reviews() {
       local review_content=$(cat "$review_file")
       output="${output}
 
-=== Review ready for commit ${commit_sha}. Reminder: These are only suggestions, you can pick what to do. Default prioritization: Fix things in-scope even if low-severity ===
+=== Review ready for commit ${commit_sha}. Reminder: These are only suggestions, you can pick what to do. User preference is: Fix correct suggestions that are in-scope, including minor suggestions. e.g if the code removed a variable then also remove comments explaining that variable, even though that is small. ===
 <Review>
 ${review_content}
 </Review>
