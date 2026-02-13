@@ -42,7 +42,7 @@ run_agent_review() {
   fi
 }
 
-# Output hook JSON to deliver feedback via additionalContext (non-blocking).
+# Output hook JSON to deliver feedback via additionalContext.
 # Usage: deliver_post_tool_context "Your review message here"
 deliver_post_tool_context() {
   local message="$1"

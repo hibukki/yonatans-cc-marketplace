@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Sync PostToolUse hook for git push.
-# Reviews the full branch vs main when pushing a non-main branch.
+# Reviews the full branch vs default branch when pushing a feature branch.
 
 SCRIPT_DIR="$(dirname "$0")"
 source "$SCRIPT_DIR/lib-common.sh"
@@ -12,18 +12,21 @@ require_jq_or_exit
 INPUT=$(cat)
 COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty')
 
-# Only run on git push commands
-if ! echo "$COMMAND" | grep -qE '(^|[[:space:]])git[[:space:]].*push([[:space:]]|$)'; then
+# Only run on "git push" (not "git stash push" etc.)
+if ! echo "$COMMAND" | grep -qE '(^|[[:space:]])git[[:space:]]+push([[:space:]]|$)'; then
   exit 0
 fi
 
-# Skip if on main branch (nothing to review against)
+# Detect default branch (main or master)
+DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||' || echo "main")
+
+# Skip if on default branch (nothing to review against)
 BRANCH=$(git branch --show-current 2>/dev/null || true)
-if [[ -z "$BRANCH" || "$BRANCH" == "main" || "$BRANCH" == "master" ]]; then
+if [[ -z "$BRANCH" || "$BRANCH" == "$DEFAULT_BRANCH" ]]; then
   exit 0
 fi
 
-run_agent_review "Review the current branch vs main"
+run_agent_review "Review the current branch vs $DEFAULT_BRANCH"
 
 OUTPUT="=== Branch review for ${BRANCH} (pushed) ===
 
