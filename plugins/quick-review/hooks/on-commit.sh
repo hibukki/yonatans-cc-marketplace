@@ -50,21 +50,7 @@ count_commit_changes() {
     | bc 2>/dev/null || echo "0"
 }
 
-# Run review in an isolated subshell to prevent claude stdout from corrupting hook JSON.
-REVIEW_FILE="/tmp/review-${COMMIT_SHA}-$$.txt"
-(
-  exec >/dev/null 2>&1
-  claude -p "Review commit $COMMIT_SHA" --agent quick-reviewer > "$REVIEW_FILE" 2>&1
-)
-REVIEW_EXIT_CODE=$?
-REVIEW_OUTPUT=$(cat "$REVIEW_FILE" 2>/dev/null || echo "NO REVIEW OUTPUT")
-rm -f "$REVIEW_FILE"
-
-if [[ $REVIEW_EXIT_CODE -ne 0 ]]; then
-  REVIEW="ERROR (exit code $REVIEW_EXIT_CODE): $REVIEW_OUTPUT"
-else
-  REVIEW="$REVIEW_OUTPUT"
-fi
+run_agent_review "Review commit $COMMIT_SHA"
 
 # Build the output message
 OUTPUT="=== Review for commit ${COMMIT_SHA} ===
@@ -83,10 +69,4 @@ Note: This was a large commit (${DIFF_LINES} lines changed). Smaller, self-conta
   fi
 fi
 
-# Deliver via hookSpecificOutput.additionalContext (confirmed working for sync PostToolUse)
-jq -n --arg ctx "$OUTPUT" '{
-  "hookSpecificOutput": {
-    "hookEventName": "PostToolUse",
-    "additionalContext": $ctx
-  }
-}'
+deliver_post_tool_context "$OUTPUT"
