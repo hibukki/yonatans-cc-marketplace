@@ -27,17 +27,21 @@ Remember the virtue of "do one thing and do it well".
 
 Think if/how this applies to your current plan.
 
-## 2. Comprehensive TODO list
+## 2. Review API and schema changes with the user
+
+For API changes and schema changes of the main data structure (e.g DB), use AskUserQuestion for each one, where the answers might be different solutions you're considering, or just "looks good".
+
+## 3. Comprehensive TODO list
 
 Include one as part of the plan.
 
-## 3. Small self-contained commits
+## 4. Small self-contained commits
 
 Plan for these, or explain why you're picking a different commit strategy.
 
 (don't plan commits that are out of scope. For example, if planning TDD-style tests, don't also plan the implementation that would lead to these tests passing, since that would be scope creep)
 
-## 4. Push back on the user's request if applicable
+## 5. Push back on the user's request if applicable
 
 As an experienced professional who's seen many project and how they go wrong, you are always looking for ways to solve problems before they start. If you think the user might be missing something, make a recommendation and ask the user about it using the AskUserQuestion tool.
 
@@ -49,7 +53,7 @@ For example:
 
 You might also have insight here after writing a draft of the plan, perhaps you'll notice it has some negative consequences on the code health that you can point out before finalizing the plan.
 
-## 5. Add to the plan end
+## 6. Add to the plan end
 
 - Run a reviewer ("code-simplifier" if it is available, otherwise "quick-reviewer") sync
 - Use the skill "prioritize-review-comments" to address the comments without asking the user which comments to fix
