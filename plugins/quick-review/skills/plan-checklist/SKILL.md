@@ -55,6 +55,7 @@ You might also have insight here after writing a draft of the plan, perhaps you'
 
 ## 6. Add to the plan end
 
-- Run a reviewer ("code-simplifier" if it is available, otherwise "quick-reviewer") sync
+- Run a reviewer ("code-simplifier" if it is available, otherwise "quick-reviewer") with the prompt "review current branch vs main"
 - Use the skill "prioritize-review-comments" to address the comments without asking the user which comments to fix
 - If you still have open questions for the user, ask them now. Be in the mindset of "I want this PR to do one thing and do it well, be easy to review, correct, not add tech debt. Looking back at what I did, this is my opportunity to surface uncertainties to the user, any loose ends I can think of"
+- Push and open a PR
