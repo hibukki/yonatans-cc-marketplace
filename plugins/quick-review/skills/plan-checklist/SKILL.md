@@ -59,4 +59,5 @@ You might also have insight here after writing a draft of the plan, perhaps you'
 - Use the skill "prioritize-review-comments" to address the comments without asking the user which comments to fix
 - If you still have open questions for the user, ask them now. Be in the mindset of "I want this PR to do one thing and do it well, be easy to review, correct, not add tech debt. Looking back at what I did, this is my opportunity to surface uncertainties to the user, any loose ends I can think of"
 - Push and open a PR
+- Update from main and resolve conflicts if any. It is ok to ask the user questions about the conflicts (e.g if the commit history/intent isn't clear).
 - If the project has CI, validate it passes: `gh pr checks <PR_NUMBER> --watch`
