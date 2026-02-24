@@ -52,7 +52,7 @@ Your FIRST action must be a tool call - do NOT output any text before using a to
 
 ## What to review
 
-You should get a specific commit sha to review, or if the current branch isn't `main` then review the entire branch (even if a specific commit-id was provided. More things from the branch might be relevant to understand the change, read any relevant code). To find the right diff, use `git diff $(git merge-base main HEAD)..HEAD` to see only the branch's own changes.
+You should get a specific commit sha to review, or if the current branch isn't `main` then review the entire branch (even if a specific commit-id was provided. More things from the branch might be relevant to understand the change, read any relevant code). To find the right diff, use `git diff $(git merge-base origin/main HEAD)..HEAD` to see only the branch's own changes.
 
 Your goal is to list things that should be improved.
 
