@@ -61,6 +61,6 @@ You might also have insight here after writing a draft of the plan, perhaps you'
 - Update from main and resolve conflicts if any. It is ok to ask the user questions about the conflicts (e.g if the commit history/intent isn't clear).
 - Push and open a PR
 - If the project has CI, validate it passes: `gh pr checks <PR_NUMBER> --watch`
-- After CI passes, check for any comments on the PR: `gh pr view <PR_NUMBER> --comments`
+- After CI passes, check for any comments on the PR: `gh pr view <PR_NUMBER> --comments` (and use the methodology from "prioritize-review-comments" to prioritize)
 - Consider which follow up tasks, if any, should become issues, and suggest them. Issues should mostly mention pain points (e.g a bug). It's ok to write "Proposed solution" but not "Solution/plan:" (leave it up to the dev to have judgement on how to solve it)
 - Consider if something didn't work well in the process/tools/dev-env/review-flows, and point them out to the user even if you can't easily come up with a fix.
