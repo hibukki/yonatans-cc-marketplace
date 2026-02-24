@@ -26,7 +26,7 @@ if [[ -z "$BRANCH" || "$BRANCH" == "$DEFAULT_BRANCH" ]]; then
   exit 0
 fi
 
-run_agent_review "Review the current branch vs $DEFAULT_BRANCH"
+run_agent_review "Review the current branch vs $DEFAULT_BRANCH, e.g with `git diff $(git merge-base origin/main HEAD)..HEAD`"
 
 OUTPUT="=== Branch review for ${BRANCH} (pushed) ===
 
