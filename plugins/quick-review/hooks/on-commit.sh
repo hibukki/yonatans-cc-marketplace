@@ -57,7 +57,7 @@ OUTPUT="=== Review for commit ${COMMIT_SHA} ===
 
 ${REVIEW}
 
-Use the prioritize-review-comments skill to decide which suggestions to implement."
+Use the prioritize-review-comments skill to decide which suggestions to implement, if you haven't used that skill yet."
 
 # Large commit warning
 if command -v bc &>/dev/null; then
