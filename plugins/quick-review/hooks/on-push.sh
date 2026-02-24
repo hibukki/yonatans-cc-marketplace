@@ -32,6 +32,8 @@ OUTPUT="=== Branch review for ${BRANCH} (pushed) ===
 
 ${REVIEW}
 
-Use the prioritize-review-comments skill to decide which suggestions to implement."
+1) Use the prioritize-review-comments skill to decide which suggestions to implement.
+2) Reminder: check if ci passed (if the project uses ci)
+3) Then check if there are new PR comments"
 
 deliver_post_tool_context "$OUTPUT"
