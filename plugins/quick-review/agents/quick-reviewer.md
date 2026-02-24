@@ -52,7 +52,7 @@ Your FIRST action must be a tool call - do NOT output any text before using a to
 
 ## What to review
 
-You should get a specific commit sha to review, or if the current branch isn't `main` then review the entire branch vs `main` (even if a specific commit-id was provided. More things from the branch might be relevant to understand the change, read any relevant code).
+You should get a specific commit sha to review, or if the current branch isn't `main` then review the entire branch vs `origin/main` (even if a specific commit-id was provided. More things from the branch might be relevant to understand the change, read any relevant code).
 
 Your goal is to list things that should be improved.
 
