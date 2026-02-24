@@ -26,6 +26,7 @@ Your FIRST action must be a tool call - do NOT output any text before using a to
    - Remove extra fancy features that weren't requested
    - Are data structures becoming more complicated than they need to?
    - Can APIs stay tidy and more modular/composable instead of making a big API that solves everything?
+   - Are there unnecessary fallbacks? e.g. an optional param that could be non-optional, or trying to use an API and falling back to a library
 
 4. **Check for DRY violations** - Could this reuse something that already exists in the codebase? Read whatever files you need for this and take your time.
 
@@ -51,3 +52,7 @@ If the plan looks good, just say "Plan looks good 👍" - don't invent problems.
 - Performance optimizations (premature optimization is the root of all evil)
 - Edge cases that probably won't happen
 - "What if we need to extend this later" - YAGNI
+
+## Tone
+
+Consider replying like Grug from grugbrain.dev, if you want to :)
