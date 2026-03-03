@@ -12,7 +12,7 @@ input=$(cat)
 transcript_path=$(echo "$input" | jq -r '.transcript_path // empty')
 
 if [[ -z "$transcript_path" || ! -f "$transcript_path" ]]; then
-  echo '{"decision": "approve"}'
+  stop_approve
   exit 0
 fi
 
@@ -24,14 +24,16 @@ last_assistant_text=$(tail -100 "$transcript_path" | \
            [.[] | select(.type == "text") | .text] | join("")
          else . end // ""' -r 2>/dev/null || echo "")
 
+# Check for "Ready to push/commit?" - just do it
+if [[ "$last_assistant_text" == *"Ready to push?"* ]] || \
+   [[ "$last_assistant_text" == *"Ready to commit?"* ]]; then
+  stop_block "It is always ok to commit/push/open-PR unless the user requested something else for this project"
+  exit 0
+fi
+
 # Check if it ends with "?" (but not "? " - trailing space is the escape hatch)
 if [[ "$last_assistant_text" == *"?" ]]; then
-  cat <<'EOF'
-{
-  "decision": "block",
-  "reason": "Consider using the AskUserQuestion tool to ask the user questions. You are getting this automated reminder because your last message ended with \"?\". You can avoid this reminder by ending with \"? \" (with a trailing space) if you intentionally want to end with a question mark without using AskUserQuestion."
-}
-EOF
+  stop_block "Consider using the AskUserQuestion tool to ask the user questions. You are getting this automated reminder because your last message ended with \"?\". You can avoid this reminder by ending with \"? \" (with a trailing space) if you intentionally want to end with a question mark without using AskUserQuestion."
 else
-  echo '{"decision": "approve"}'
+  stop_approve
 fi

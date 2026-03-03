@@ -42,6 +42,17 @@ run_agent_review() {
   fi
 }
 
+# Output a block decision for Stop hooks
+# Usage: stop_block "reason message"
+stop_block() {
+  jq -n --arg reason "$1" '{"decision":"block","reason":$reason}'
+}
+
+# Output an approve decision for Stop hooks
+stop_approve() {
+  echo '{"decision":"approve"}'
+}
+
 # Output hook JSON to deliver feedback via additionalContext.
 # Usage: deliver_post_tool_context "Your review message here"
 deliver_post_tool_context() {
