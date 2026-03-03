@@ -1,6 +1,6 @@
 {
   "name": "quick-review",
-  "version": "0.5.223",
+  "version": "0.5.224",
   "description": "Auto-triggers a quick code review after git commits",
   "hooks": {
     "SessionStart": [
@@ -33,6 +33,15 @@
           {
             "type": "command",
             "command": "echo '{\"additionalContext\": \"Tip: Use TodoWrite to break down the plan into trackable tasks.\"}'"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/check-commit-heredoc.sh"
           }
         ]
       },
