@@ -1,6 +1,6 @@
 ---
 name: pick-up-github-issue
-description: Use this skill when the user asks to "pick up an issue", "find an issue to work on", "pick up a github issue", or wants to claim a ready-to-implement issue from GitHub.
+description: Use this skill when the user wants to find and work on a GitHub issue.
 ---
 
 # Pick Up GitHub Issue
@@ -49,7 +49,7 @@ Present the chosen issue: a brief summary **and** the full issue body (quoted). 
 After user confirms, post a comment to claim it. This serves as the "assignee" since Claude doesn't have a separate GitHub account:
 
 ```bash
-gh issue comment <NUMBER> --body "Picking this up. - Claude (claude-opus-4-6)"
+gh issue comment <NUMBER> --body "Picking this up. - Claude (<your model name/version>)"
 ```
 
 ### 6. Enter plan mode
