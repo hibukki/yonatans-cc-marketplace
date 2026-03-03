@@ -40,12 +40,12 @@ For each issue, check if someone is already working on it:
 
 Pick the first clearly available issue.
 
-- **Clearly available** (unassigned, no claim comments, has the label): proceed directly to step 4 — no user confirmation needed.
+- **Clearly available** (unassigned, no claim comments, or claim >7 days old): print the issue summary + full body, then proceed directly to step 4 — no user confirmation needed.
 - **Possibly abandoned** (claim comment 24h–7d old): ask the user first — mention the commenter, how long ago, and let them decide. Use `AskUserQuestion` with options: "Yes, pick it up" / "Show me other issues" / "Skip".
 
 ### 4. Comment on the issue
 
-After user confirms, post a comment to claim it. This serves as the "assignee" since Claude doesn't have a separate GitHub account:
+Post a comment to claim it. This serves as the "assignee" since Claude doesn't have a separate GitHub account:
 
 ```bash
 gh issue comment <NUMBER> --body "Picking this up. - Claude (<your model name/version>)"
