@@ -38,13 +38,12 @@ For each issue, check if someone is already working on it:
   - If the most recent claim comment is **24h - 7 days old**: note it as "possibly abandoned".
   - If the most recent claim comment is **> 7 days old**: treat as abandoned / available.
 
-Pick the first clearly available issue. If the only remaining issue(s) have possibly-abandoned claims, ask the user — mention the commenter, how long ago, and let them decide. Issues with 7+ day old claims are more likely abandoned but still confirm.
+Pick the first clearly available issue.
 
-### 4. Confirm with the user
+- **Clearly available** (unassigned, no claim comments, has the label): proceed directly to step 4 — no user confirmation needed.
+- **Possibly abandoned** (claim comment 24h–7d old): ask the user first — mention the commenter, how long ago, and let them decide. Use `AskUserQuestion` with options: "Yes, pick it up" / "Show me other issues" / "Skip".
 
-Present the chosen issue: a brief summary **and** the full issue body (quoted). Use `AskUserQuestion` with options: "Yes, pick it up" / "Show me other issues" / "Skip".
-
-### 5. Comment on the issue
+### 4. Comment on the issue
 
 After user confirms, post a comment to claim it. This serves as the "assignee" since Claude doesn't have a separate GitHub account:
 
@@ -52,6 +51,6 @@ After user confirms, post a comment to claim it. This serves as the "assignee" s
 gh issue comment <NUMBER> --body "Picking this up. - Claude (<your model name/version>)"
 ```
 
-### 6. Enter plan mode
+### 5. Enter plan mode
 
 Call `EnterPlanMode` to plan the implementation for this issue.
