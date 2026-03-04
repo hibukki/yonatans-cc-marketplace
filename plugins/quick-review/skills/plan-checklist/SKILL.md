@@ -60,7 +60,7 @@ You might also have insight here after writing a draft of the plan, perhaps you'
 - If you still have open questions for the user, ask them now. Be in the mindset of "I want this PR to do one thing and do it well, be easy to review, correct, not add tech debt. Looking back at what I did, this is my opportunity to surface uncertainties to the user, any loose ends I can think of"
 - Update from main and resolve conflicts if any. It is ok to ask the user questions about the conflicts (e.g if the commit history/intent isn't clear).
 - Push and open a PR
-- If the project has CI, validate it passes: `gh pr checks <PR_NUMBER> --watch`
+- If the project has CI, validate it passes. To avoid verbose output while waiting, consider `gh pr checks <PR_NUMBER> --watch --fail-fast 2>&1 | tail -30`
 - After CI passes, check for any comments on the PR: `gh pr view <PR_NUMBER> --comments` (and use the methodology from "prioritize-review-comments" to prioritize)
 - If you made any changes, push and loop back to the previous step (wait for ci and github-claude's comments)
 - Consider which follow up tasks, if any, should become issues, and suggest them. Issues should mostly mention pain points (e.g a bug). It's ok to write "Proposed solution" but not "Solution/plan:" (leave it up to the dev to have judgement on how to solve it)
