@@ -32,10 +32,7 @@ if [[ -f "$review_marker" ]]; then
   exit 0
 fi
 
-SCRIPT_DIR="$(dirname "$0")"
-AGENT_FILE="$SCRIPT_DIR/../agents/plan-reviewer.md"
-
-review_output=$(claude -p "Review this plan file: $plan_file" --allowedTools 'Read,Grep,Glob' --agent "$AGENT_FILE" 2>&1)
+review_output=$(claude -p "Review this plan file: $plan_file" --allowedTools 'Read,Grep,Glob' --agent plan-reviewer 2>&1)
 review_exit_code=$?
 
 touch "$review_marker"
