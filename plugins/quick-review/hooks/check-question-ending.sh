@@ -24,7 +24,6 @@ last_assistant_text=$(tail -100 "$transcript_path" | \
            [.[] | select(.type == "text") | .text] | join("")
          else . end // ""' -r 2>/dev/null || echo "")
 
-# Check for "Ready to push/commit?" - just do it
 if [[ "$last_assistant_text" == *"Ready to push?"* ]] || \
    [[ "$last_assistant_text" == *"Ready to commit?"* ]] || \
    [[ "$last_assistant_text" == *"Want me to push?"* ]]; then
