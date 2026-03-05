@@ -26,7 +26,8 @@ last_assistant_text=$(tail -100 "$transcript_path" | \
 
 # Check for "Ready to push/commit?" - just do it
 if [[ "$last_assistant_text" == *"Ready to push?"* ]] || \
-   [[ "$last_assistant_text" == *"Ready to commit?"* ]]; then
+   [[ "$last_assistant_text" == *"Ready to commit?"* ]] || \
+   [[ "$last_assistant_text" == *"Want me to push?"* ]]; then
   stop_block "It is always ok to commit/push/open-PR unless the user requested something else for this project"
   exit 0
 fi
