@@ -48,3 +48,7 @@ For each review comment, ask:
 **Skip:** "While you're here, the function above could use better error handling" → Out of scope, different change.
 
 **Skip:** "This should use the new API pattern" → Out of scope if you're intentionally matching existing code.
+
+**Fix:** "There's duplicated logic between these two handlers" → If the duplication was introduced or made worse by your change, fix it.
+
+**Skip:** "These three files have similar parsing logic, consider extracting a shared utility" → Pre-existing duplication that wasn't made worse by your change. Out of scope.
