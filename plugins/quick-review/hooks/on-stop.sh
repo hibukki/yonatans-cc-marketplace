@@ -24,7 +24,7 @@ if [[ -n "$transcript_path" && -f "$transcript_path" ]]; then
              [.[] | select(.type == "text") | .text] | join("")
            else . end // ""' -r 2>/dev/null || echo "")
   if echo "$last_assistant_text" | grep -qi 'no \(new \)\?blocking comments'; then
-    stop_block "To prioritize comments, you can use the relevant skill, we don't prioritize by whether the comment is blocking or not"
+    stop_block "To prioritize comments, use the skill: /prioritize-review-comments. We don't prioritize by whether the comment is blocking or not"
     exit 0
   fi
 fi
