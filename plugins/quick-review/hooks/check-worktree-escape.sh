@@ -17,7 +17,10 @@ target_path=$(echo "$input" | jq -r '.tool_input.path // .tool_input.file_path /
 # No path specified (defaults to cwd) — that's fine
 [[ -n "$target_path" ]] || exit 0
 
-# If the target path is inside this worktree, it's fine
-[[ "$target_path" == "$worktree_root"* ]] && exit 0
+# Resolve symlinks and ".." to prevent traversal bypass
+resolved=$(realpath -m "$target_path" 2>/dev/null || echo "$target_path")
+
+# If the resolved path is inside this worktree, it's fine
+[[ "$resolved" == "$worktree_root"* ]] && exit 0
 
 deny_with_reason "Please stay in the worktree. You're running in $worktree_root but tried to access $target_path"
