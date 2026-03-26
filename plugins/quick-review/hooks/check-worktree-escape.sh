@@ -24,4 +24,11 @@ resolved=$(realpath -m "$target_path" 2>/dev/null || echo "$target_path")
 # If the resolved path is inside this worktree, it's fine
 [[ "$resolved" == "$worktree_root/"* || "$resolved" == "$worktree_root" ]] && exit 0
 
+# Extract the base repo path: everything before /.claude/worktrees/
+# e.g. /Users/foo/project/.claude/worktrees/nice-tesla-32458 → /Users/foo/project
+base_repo=$(echo "$worktree_root" | sed 's|/\.claude/worktrees/.*||')
+
+# Only block access to the base repo itself — not to unrelated paths like ~/.claude/
+[[ "$resolved" == "$base_repo/"* || "$resolved" == "$base_repo" ]] || exit 0
+
 deny_with_reason "Please stay in the worktree. You're running in $worktree_root but tried to access $target_path"
