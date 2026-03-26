@@ -21,6 +21,11 @@ target_path=$(echo "$input" | jq -r '.tool_input.path // .tool_input.file_path /
 # Resolve symlinks and ".." to prevent traversal bypass
 resolved=$(realpath -m "$target_path" 2>/dev/null || echo "$target_path")
 
+# If realpath couldn't resolve and path contains "..", fail closed
+if [[ "$resolved" == "$target_path" && "$target_path" == *..* ]]; then
+  deny_with_reason "Cannot verify path safety (realpath unavailable) and path contains '..': $target_path"
+fi
+
 # If the resolved path is inside this worktree, it's fine
 [[ "$resolved" == "$worktree_root/"* || "$resolved" == "$worktree_root" ]] && exit 0
 
