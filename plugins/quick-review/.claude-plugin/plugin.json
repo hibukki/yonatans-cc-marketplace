@@ -1,6 +1,6 @@
 {
   "name": "quick-review",
-  "version": "0.5.246",
+  "version": "0.5.247",
   "description": "Auto-triggers a quick code review after git commits",
   "hooks": {
     "SessionStart": [
@@ -14,6 +14,15 @@
       }
     ],
     "PreToolUse": [
+      {
+        "matcher": "Grep|Glob|Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/check-worktree-escape.sh"
+          }
+        ]
+      },
       {
         "matcher": "Edit|Write",
         "hooks": [
