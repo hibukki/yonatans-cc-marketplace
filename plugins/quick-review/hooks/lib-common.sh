@@ -53,14 +53,52 @@ stop_approve() {
   echo '{"decision":"approve"}'
 }
 
-# Output hook JSON to deliver feedback via additionalContext.
-# Usage: deliver_post_tool_context "Your review message here"
+# Detect the default branch (main or master)
+get_default_branch() {
+  local branch
+  branch=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||')
+  echo "${branch:-main}"
+}
+
+# Extract all user text messages from the transcript.
+# Usage: extract_user_quotes "$INPUT_JSON"
+# Reads transcript_path from the input JSON, extracts all user messages.
+extract_user_quotes() {
+  local input="$1"
+  local transcript
+  transcript=$(echo "$input" | jq -r '.transcript_path // empty')
+  if [[ -z "$transcript" || ! -f "$transcript" ]]; then
+    echo ""
+    return
+  fi
+  jq -s '[.[] | select(.type == "user") | .message.content |
+    if type == "array" then
+      [.[] | select(.type == "text") | .text] | join("")
+    else . end // ""] | join("\n---\n")' -r "$transcript" 2>/dev/null || true
+}
+
+# Output hook JSON to deliver feedback via additionalContext (Claude only).
+# Usage: deliver_post_tool_context "Your message here"
 deliver_post_tool_context() {
   local message="$1"
   jq -n --arg ctx "$message" '{
     "hookSpecificOutput": {
       "hookEventName": "PostToolUse",
       "additionalContext": $ctx
+    }
+  }'
+}
+
+# Output hook JSON to deliver a review visible to both user and Claude.
+# systemMessage = shown to user, additionalContext = shown to Claude.
+# Usage: deliver_review "Your review output here"
+deliver_review() {
+  local message="$1"
+  jq -n --arg msg "$message" '{
+    "systemMessage": $msg,
+    "hookSpecificOutput": {
+      "hookEventName": "PostToolUse",
+      "additionalContext": $msg
     }
   }'
 }

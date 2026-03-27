@@ -2,14 +2,12 @@
 set -euo pipefail
 
 # Sync PostToolUse hook for git commits.
-# Runs claude -p to review the commit and delivers via additionalContext.
+# Runs the quick-reviewer agent and delivers via systemMessage (user-visible)
+# and additionalContext (Claude-visible).
 #
 # Why sync instead of async?
 # Claude Code async hooks have a bug where output (systemMessage/additionalContext)
 # is never delivered to the conversation, regardless of format.
-# Tested: systemMessage, hookSpecificOutput.additionalContext, top-level additionalContext.
-# None worked with async:true. All work with sync hooks.
-# Bug report: TODO(link)
 
 SCRIPT_DIR="$(dirname "$0")"
 source "$SCRIPT_DIR/lib-common.sh"
@@ -50,14 +48,20 @@ count_commit_changes() {
     | bc 2>/dev/null || echo "0"
 }
 
-run_agent_review "Review commit $COMMIT_SHA"
+# Build review prompt from template + substitutions
+DEFAULT_BRANCH=$(get_default_branch)
+USER_QUOTES=$(extract_user_quotes "$INPUT")
+REVIEW_PROMPT=$(DEFAULT_BRANCH="$DEFAULT_BRANCH" USER_QUOTES="$USER_QUOTES" \
+  envsubst '$DEFAULT_BRANCH $USER_QUOTES' < "$SCRIPT_DIR/review-prompt.md")
+
+run_agent_review "$REVIEW_PROMPT"
 
 # Build the output message
-OUTPUT="=== Review for commit ${COMMIT_SHA} ===
+OUTPUT="=== Branch review (after commit ${COMMIT_SHA}) ===
 
 ${REVIEW}
 
-Use the prioritize-review-comments skill to decide which suggestions to implement, if you haven't used that skill yet."
+Remember the /prioritize-review-comments skill."
 
 # Large commit warning
 if command -v bc &>/dev/null; then
@@ -69,4 +73,4 @@ Note: This was a large commit (${DIFF_LINES} lines changed). Smaller, self-conta
   fi
 fi
 
-deliver_post_tool_context "$OUTPUT"
+deliver_review "$OUTPUT"
