@@ -1,6 +1,6 @@
 {
   "name": "quick-review",
-  "version": "0.5.265",
+  "version": "0.5.266",
   "description": "Auto-triggers a quick code review after git commits",
   "hooks": {
     "SessionStart": [
@@ -79,6 +79,11 @@
           {
             "type": "command",
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/count-writes.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/on-plan-edit.sh",
+            "timeout": 300
           }
         ]
       },
