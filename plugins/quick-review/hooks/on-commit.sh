@@ -2,14 +2,12 @@
 set -euo pipefail
 
 # Sync PostToolUse hook for git commits.
-# Runs claude -p to review the commit and delivers via additionalContext.
+# Runs the quick-reviewer agent and delivers via systemMessage (user-visible)
+# and additionalContext (Claude-visible).
 #
 # Why sync instead of async?
 # Claude Code async hooks have a bug where output (systemMessage/additionalContext)
 # is never delivered to the conversation, regardless of format.
-# Tested: systemMessage, hookSpecificOutput.additionalContext, top-level additionalContext.
-# None worked with async:true. All work with sync hooks.
-# Bug report: TODO(link)
 
 SCRIPT_DIR="$(dirname "$0")"
 source "$SCRIPT_DIR/lib-common.sh"
@@ -50,34 +48,15 @@ count_commit_changes() {
     | bc 2>/dev/null || echo "0"
 }
 
-# Build review prompt: full branch review on feature branches, commit review on default branch
-DEFAULT_BRANCH=$(get_default_branch)
-BRANCH=$(git branch --show-current 2>/dev/null || true)
-
-if [[ -n "$BRANCH" && "$BRANCH" != "$DEFAULT_BRANCH" ]]; then
-  # Feature branch: full branch review with user context
-  USER_QUOTES=$(extract_user_quotes "$INPUT")
-  REVIEW_PROMPT="Review the current branch using \`git diff \$(git merge-base origin/$DEFAULT_BRANCH HEAD)..HEAD\`"
-  if [[ -n "$USER_QUOTES" ]]; then
-    REVIEW_PROMPT="$REVIEW_PROMPT
-
-User messages sent while working on this feature (some of them might not make sense without more context, but hopefully some will):
-$USER_QUOTES"
-  fi
-else
-  # Main/default branch: just review the commit
-  REVIEW_PROMPT="Review commit $COMMIT_SHA"
-fi
+# Build review prompt from template + user quotes
+USER_QUOTES=$(extract_user_quotes "$INPUT")
+TEMPLATE=$(cat "$SCRIPT_DIR/review-prompt.md")
+REVIEW_PROMPT="${TEMPLATE/\$USER_QUOTES/$USER_QUOTES}"
 
 run_agent_review "$REVIEW_PROMPT"
 
 # Build the output message
-if [[ -n "$BRANCH" && "$BRANCH" != "$DEFAULT_BRANCH" ]]; then
-  REVIEW_HEADER="Branch review (after commit ${COMMIT_SHA})"
-else
-  REVIEW_HEADER="Review for commit ${COMMIT_SHA}"
-fi
-OUTPUT="=== ${REVIEW_HEADER} ===
+OUTPUT="=== Branch review (after commit ${COMMIT_SHA}) ===
 
 ${REVIEW}
 
@@ -93,4 +72,4 @@ Note: This was a large commit (${DIFF_LINES} lines changed). Smaller, self-conta
   fi
 fi
 
-deliver_post_tool_context "$OUTPUT"
+deliver_review "$OUTPUT"

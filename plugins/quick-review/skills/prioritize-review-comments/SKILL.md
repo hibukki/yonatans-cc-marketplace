@@ -55,8 +55,8 @@ For each review comment, ask:
 
 ## Show Your Decisions
 
-After prioritizing, show the user a table:
-
-| # | Review Point | Decision | Reasoning |
-|---|-------------|----------|-----------|
-| 1 | [suggestion] | Fix / Skip | [why] |
+Consider showing the user your decisions. For each review comment:
+1. Is it a valid problem?
+2. Is it in code that was touched?
+3. (If you want: how big is the fix. Though this shouldn't affect whether we do it.)
+4. Fix / Skip / Open follow-up issue
