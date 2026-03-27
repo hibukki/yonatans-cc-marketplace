@@ -72,7 +72,12 @@ fi
 run_agent_review "$REVIEW_PROMPT"
 
 # Build the output message
-OUTPUT="=== Branch review (after commit ${COMMIT_SHA}) ===
+if [[ -n "$BRANCH" && "$BRANCH" != "$DEFAULT_BRANCH" ]]; then
+  REVIEW_HEADER="Branch review (after commit ${COMMIT_SHA})"
+else
+  REVIEW_HEADER="Review for commit ${COMMIT_SHA}"
+fi
+OUTPUT="=== ${REVIEW_HEADER} ===
 
 ${REVIEW}
 
