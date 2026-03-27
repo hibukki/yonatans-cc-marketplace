@@ -50,14 +50,33 @@ count_commit_changes() {
     | bc 2>/dev/null || echo "0"
 }
 
-run_agent_review "Review commit $COMMIT_SHA"
+# Build review prompt: full branch review on feature branches, commit review on default branch
+DEFAULT_BRANCH=$(get_default_branch)
+BRANCH=$(git branch --show-current 2>/dev/null || true)
+
+if [[ -n "$BRANCH" && "$BRANCH" != "$DEFAULT_BRANCH" ]]; then
+  # Feature branch: full branch review with user context
+  USER_QUOTES=$(extract_user_quotes "$INPUT")
+  REVIEW_PROMPT="Review the current branch using \`git diff \$(git merge-base origin/$DEFAULT_BRANCH HEAD)..HEAD\`"
+  if [[ -n "$USER_QUOTES" ]]; then
+    REVIEW_PROMPT="$REVIEW_PROMPT
+
+User messages sent while working on this feature (some of them might not make sense without more context, but hopefully some will):
+$USER_QUOTES"
+  fi
+else
+  # Main/default branch: just review the commit
+  REVIEW_PROMPT="Review commit $COMMIT_SHA"
+fi
+
+run_agent_review "$REVIEW_PROMPT"
 
 # Build the output message
-OUTPUT="=== Review for commit ${COMMIT_SHA} ===
+OUTPUT="=== Branch review (after commit ${COMMIT_SHA}) ===
 
 ${REVIEW}
 
-Use the prioritize-review-comments skill to decide which suggestions to implement, if you haven't used that skill yet."
+Remember the /prioritize-review-comments skill."
 
 # Large commit warning
 if command -v bc &>/dev/null; then
