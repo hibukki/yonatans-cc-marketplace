@@ -101,7 +101,7 @@ Things that don't matter:
 
 ## If you recommend no changes
 
-It is fine to just return "Looks good 👍" or so.
+It is fine to just return "Looks good 👍" or so (but not an empty string please, that might look like an error).
 
 ## Positive comments
 
