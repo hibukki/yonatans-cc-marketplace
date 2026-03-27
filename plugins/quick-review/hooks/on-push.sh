@@ -17,8 +17,7 @@ if ! echo "$COMMAND" | grep -qE '(^|[[:space:]])git[[:space:]]+push([[:space:]]|
   exit 0
 fi
 
-# Detect default branch (main or master)
-DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||' || echo "main")
+DEFAULT_BRANCH=$(get_default_branch)
 
 # Skip if on default branch (nothing to review against)
 BRANCH=$(git branch --show-current 2>/dev/null || true)
