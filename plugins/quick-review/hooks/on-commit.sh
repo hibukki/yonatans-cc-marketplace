@@ -48,10 +48,12 @@ count_commit_changes() {
     | bc 2>/dev/null || echo "0"
 }
 
-# Build review prompt from template + user quotes
+# Build review prompt from template + substitutions
+DEFAULT_BRANCH=$(get_default_branch)
 USER_QUOTES=$(extract_user_quotes "$INPUT")
 TEMPLATE=$(cat "$SCRIPT_DIR/review-prompt.md")
-REVIEW_PROMPT="${TEMPLATE/\$USER_QUOTES/$USER_QUOTES}"
+REVIEW_PROMPT="${TEMPLATE/\$DEFAULT_BRANCH/$DEFAULT_BRANCH}"
+REVIEW_PROMPT="${REVIEW_PROMPT/\$USER_QUOTES/$USER_QUOTES}"
 
 run_agent_review "$REVIEW_PROMPT"
 
