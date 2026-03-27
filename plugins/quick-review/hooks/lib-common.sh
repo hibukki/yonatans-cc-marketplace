@@ -20,15 +20,24 @@ deny_with_reason() {
 
 # Run a claude agent review in an isolated subshell.
 # Captures output to a temp file to prevent claude stdout from corrupting hook JSON.
-# Usage: run_agent_review "Review commit abc1234"
+# Usage: run_agent_review "prompt" [agent_name] [allowed_tools]
+#   agent_name defaults to "quick-reviewer"
+#   allowed_tools is optional (e.g. "Read,Grep,Glob")
 # Output: sets REVIEW variable with review text (or error message)
 run_agent_review() {
   local prompt="$1"
+  local agent="${2:-quick-reviewer}"
+  local allowed_tools="${3:-}"
   local review_file="/tmp/review-$$-${RANDOM}.txt"
+
+  local agent_args=(--agent "$agent")
+  if [[ -n "$allowed_tools" ]]; then
+    agent_args+=(--allowedTools "$allowed_tools")
+  fi
 
   (
     exec >/dev/null 2>&1
-    claude -p "$prompt" --agent quick-reviewer > "$review_file" 2>&1
+    claude -p "$prompt" "${agent_args[@]}" > "$review_file" 2>&1
   )
   local exit_code=$?
   local output
