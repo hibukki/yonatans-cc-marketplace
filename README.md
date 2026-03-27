@@ -20,7 +20,7 @@ The main plugin - enforces good development practices and automates code review.
 
 #### Planning
 
-**Plan review** - Review agent for plans, automatically executed before exiting plan mode. ([agent](plugins/quick-review/agents/plan-reviewer.md))
+**Plan review** - Review agent for plans, automatically executed after every plan file edit. ([agent](plugins/quick-review/agents/plan-reviewer.md))
 
 **Plan checklist** - Remind Claude to mention in the plan: small commits, a comprehensive TODO list, etc. ([skill](plugins/quick-review/skills/plan-checklist/SKILL.md))
 

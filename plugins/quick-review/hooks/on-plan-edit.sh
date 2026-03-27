@@ -16,9 +16,6 @@ if [[ "$FILE_PATH" != "$HOME/.claude/plans/"*.md ]]; then
   exit 0
 fi
 
-# Invalidate the .reviewed marker (so on-exit-plan-mode knows the plan changed)
-rm -f "${FILE_PATH}.reviewed"
-
 # Build review prompt with user context
 USER_QUOTES=$(extract_user_quotes "$INPUT")
 REVIEW_PROMPT="Review this plan file: $FILE_PATH"
@@ -30,9 +27,6 @@ $USER_QUOTES"
 fi
 
 run_agent_review "$REVIEW_PROMPT" plan-reviewer "Read,Grep,Glob"
-
-# Mark as reviewed (so on-exit-plan-mode doesn't re-review the same version)
-touch "${FILE_PATH}.reviewed"
 
 deliver_review "=== Plan review ===
 

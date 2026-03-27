@@ -86,18 +86,6 @@ extract_user_quotes() {
     else . end // ""] | join("\n---\n")' -r "$transcript" 2>/dev/null || true
 }
 
-# Output hook JSON to deliver feedback via additionalContext (Claude only).
-# Usage: deliver_post_tool_context "Your message here"
-deliver_post_tool_context() {
-  local message="$1"
-  jq -n --arg ctx "$message" '{
-    "hookSpecificOutput": {
-      "hookEventName": "PostToolUse",
-      "additionalContext": $ctx
-    }
-  }'
-}
-
 # Output hook JSON to deliver a review visible to both user and Claude.
 # systemMessage = shown to user, additionalContext = shown to Claude.
 # Usage: deliver_review "Your review output here"
