@@ -52,3 +52,11 @@ For each review comment, ask:
 **Fix:** "There's duplicated logic between these two handlers" → If the duplication was introduced or made worse by your change, fix it.
 
 **Skip:** "These three files have similar parsing logic, consider extracting a shared utility" → Pre-existing duplication that wasn't made worse by your change. Out of scope.
+
+## Show Your Decisions
+
+After prioritizing, show the user a table:
+
+| # | Review Point | Decision | Reasoning |
+|---|-------------|----------|-----------|
+| 1 | [suggestion] | Fix / Skip | [why] |
