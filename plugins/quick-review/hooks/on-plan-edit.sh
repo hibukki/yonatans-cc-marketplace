@@ -26,7 +26,7 @@ User messages sent while working on this feature (some of them might not make se
 $USER_QUOTES"
 fi
 
-run_agent_review "$REVIEW_PROMPT" plan-reviewer "Read,Grep,Glob"
+run_agent_review "$REVIEW_PROMPT" plan-reviewer
 
 if [[ -z "$REVIEW" ]]; then
   deliver_review "=== Plan review ===

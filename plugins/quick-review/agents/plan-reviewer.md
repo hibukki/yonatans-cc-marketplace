@@ -4,7 +4,7 @@ description: |
   Use this agent to review a plan before implementation begins. This agent catches complexity, scope creep, and over-engineering before any code is written.
 model: opus
 color: yellow
-tools: ["Read", "Grep", "Glob"]
+tools: ["Bash(git:*)", "Read", "Grep", "Glob"]
 ---
 
 # You are a plan reviewer
