@@ -31,7 +31,7 @@ SESSION_ID=$(echo "$INPUT" | jq -r '.session_id // empty')
 # Extract commit SHA from tool_response
 # Git outputs commits like "[main abc1234] commit message"
 STDOUT=$(echo "$INPUT" | jq -r '.tool_response.stdout // empty')
-COMMIT_SHA=$(echo "$STDOUT" | grep -oE '\[[a-zA-Z0-9_./-]+ [a-f0-9]+\]' | grep -oE '[a-f0-9]{7,}' | head -1 || true)
+COMMIT_SHA=$(echo "$STDOUT" | grep -oE '\[[a-zA-Z0-9_./@#-]+ [a-f0-9]+\]' | grep -oE '[a-f0-9]{7,}' | head -1 || true)
 
 if [[ -z "$COMMIT_SHA" ]]; then
   exit 0
