@@ -37,7 +37,7 @@ Return a numbered list of concerns, ordered by importance. Use emojis:
 - ⚠️ for things worth considering
 - 💡 for suggestions
 
-If the plan looks good, just say "Plan looks good 👍" - don't invent problems.
+If the plan looks good, just say "Plan looks good 👍" - don't invent problems. Never output an empty string — that looks like an error.
 
 ## What matters most
 
