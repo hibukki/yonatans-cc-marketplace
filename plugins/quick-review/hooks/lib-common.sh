@@ -29,6 +29,7 @@ run_agent_review() {
   local agent="${2:-quick-reviewer}"
   local allowed_tools="${3:-}"
   local review_file="/tmp/review-$$-${RANDOM}.txt"
+  local stderr_file="/tmp/review-stderr-$$-${RANDOM}.txt"
 
   local agent_args=(--agent "$agent")
   if [[ -n "$allowed_tools" ]]; then
@@ -36,19 +37,57 @@ run_agent_review() {
   fi
 
   (
-    exec >/dev/null 2>&1
-    claude -p "$prompt" "${agent_args[@]}" > "$review_file" 2>&1
+    exec >/dev/null
+    claude -p "$prompt" "${agent_args[@]}" > "$review_file" 2>"$stderr_file"
   )
   local exit_code=$?
   local output
   output=$(cat "$review_file" 2>/dev/null || true)
-  rm -f "$review_file"
+  local stderr_output
+  stderr_output=$(cat "$stderr_file" 2>/dev/null || true)
+  rm -f "$review_file" "$stderr_file"
+
+  # Try to extract session ID from stderr (UUID format)
+  REVIEW_SESSION_ID=$(echo "$stderr_output" | grep -oE '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}' | head -1 || true)
 
   if [[ $exit_code -ne 0 ]]; then
     REVIEW="ERROR (exit code $exit_code): $output"
   else
     REVIEW="$output"
   fi
+}
+
+# Run a review agent and deliver the result (or an error if empty).
+# Usage: run_and_deliver_review "header" "prompt" "agent" "footer"
+run_and_deliver_review() {
+  local header="$1"
+  local prompt="$2"
+  local agent="${3:-quick-reviewer}"
+  local footer="${4:-}"
+
+  run_agent_review "$prompt" "$agent"
+
+  if [[ -z "$REVIEW" ]]; then
+    local debug_msg="Bug in scaffolding: no output from reviewer ($agent)."
+    if [[ -n "${REVIEW_SESSION_ID:-}" ]]; then
+      debug_msg="$debug_msg
+To debug: claude --resume $REVIEW_SESSION_ID"
+    fi
+    deliver_review "$header
+
+$debug_msg"
+    return
+  fi
+
+  local output="$header
+
+${REVIEW}"
+  if [[ -n "$footer" ]]; then
+    output="$output
+
+$footer"
+  fi
+  deliver_review "$output"
 }
 
 # Output a block decision for Stop hooks

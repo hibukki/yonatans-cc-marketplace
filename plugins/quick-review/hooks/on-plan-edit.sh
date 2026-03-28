@@ -26,16 +26,8 @@ User messages sent while working on this feature (some of them might not make se
 $USER_QUOTES"
 fi
 
-run_agent_review "$REVIEW_PROMPT" plan-reviewer
-
-if [[ -z "$REVIEW" ]]; then
-  deliver_review "=== Plan review ===
-
-Error: the plan-reviewer agent returned empty output. Please tell the user about this. You can run /quick-review if you want a review."
-else
-  deliver_review "=== Plan review ===
-
-${REVIEW}
-
-Use the suggestions that are helpful. Discard wrong ones."
-fi
+run_and_deliver_review \
+  "=== Plan review ===" \
+  "$REVIEW_PROMPT" \
+  "plan-reviewer" \
+  "Use the suggestions that are helpful. Discard wrong ones."
