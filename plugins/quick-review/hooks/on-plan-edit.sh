@@ -28,8 +28,14 @@ fi
 
 run_agent_review "$REVIEW_PROMPT" plan-reviewer "Read,Grep,Glob"
 
-deliver_review "=== Plan review ===
+if [[ -z "$REVIEW" ]]; then
+  deliver_review "=== Plan review ===
+
+Error: the plan-reviewer agent returned empty output. Please tell the user about this. You can run /quick-review if you want a review."
+else
+  deliver_review "=== Plan review ===
 
 ${REVIEW}
 
 Use the suggestions that are helpful. Discard wrong ones."
+fi

@@ -31,7 +31,7 @@ SESSION_ID=$(echo "$INPUT" | jq -r '.session_id // empty')
 # Extract commit SHA from tool_response
 # Git outputs commits like "[main abc1234] commit message"
 STDOUT=$(echo "$INPUT" | jq -r '.tool_response.stdout // empty')
-COMMIT_SHA=$(echo "$STDOUT" | grep -oE '\[[a-zA-Z0-9_/-]+ [a-f0-9]+\]' | grep -oE '[a-f0-9]{7,}' | head -1 || true)
+COMMIT_SHA=$(echo "$STDOUT" | grep -oE '\[[a-zA-Z0-9_./@#-]+ [a-f0-9]+\]' | grep -oE '[a-f0-9]{7,}' | head -1 || true)
 
 if [[ -z "$COMMIT_SHA" ]]; then
   exit 0
@@ -55,6 +55,13 @@ REVIEW_PROMPT=$(DEFAULT_BRANCH="$DEFAULT_BRANCH" USER_QUOTES="$USER_QUOTES" \
   envsubst '$DEFAULT_BRANCH $USER_QUOTES' < "$SCRIPT_DIR/review-prompt.md")
 
 run_agent_review "$REVIEW_PROMPT"
+
+if [[ -z "$REVIEW" ]]; then
+  deliver_review "=== Branch review (after commit ${COMMIT_SHA}) ===
+
+Error: the quick-reviewer agent returned empty output. Please tell the user about this. You can run /quick-review if you want a review."
+  exit 0
+fi
 
 # Build the output message
 OUTPUT="=== Branch review (after commit ${COMMIT_SHA}) ===
