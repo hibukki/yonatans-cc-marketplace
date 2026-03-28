@@ -54,30 +54,18 @@ USER_QUOTES=$(extract_user_quotes "$INPUT")
 REVIEW_PROMPT=$(DEFAULT_BRANCH="$DEFAULT_BRANCH" USER_QUOTES="$USER_QUOTES" \
   envsubst '$DEFAULT_BRANCH $USER_QUOTES' < "$SCRIPT_DIR/review-prompt.md")
 
-run_agent_review "$REVIEW_PROMPT"
-
-if [[ -z "$REVIEW" ]]; then
-  deliver_review "=== Branch review (after commit ${COMMIT_SHA}) ===
-
-Error: the quick-reviewer agent returned empty output. Please tell the user about this. You can run /quick-review if you want a review."
-  exit 0
-fi
-
-# Build the output message
-OUTPUT="=== Branch review (after commit ${COMMIT_SHA}) ===
-
-${REVIEW}
-
-Remember the /prioritize-review-comments skill."
-
-# Large commit warning
+LARGE_COMMIT_WARNING=""
 if command -v bc &>/dev/null; then
   DIFF_LINES=$(count_commit_changes "$COMMIT_SHA")
   if [[ "$DIFF_LINES" -gt "$BIG_COMMIT_THRESHOLD" ]]; then
-    OUTPUT="${OUTPUT}
+    LARGE_COMMIT_WARNING="
 
 Note: This was a large commit (${DIFF_LINES} lines changed). Smaller, self-contained commits are easier to review."
   fi
 fi
 
-deliver_review "$OUTPUT"
+run_and_deliver_review \
+  "=== Branch review (after commit ${COMMIT_SHA}) ===" \
+  "$REVIEW_PROMPT" \
+  "quick-reviewer" \
+  "Remember the /prioritize-review-comments skill.${LARGE_COMMIT_WARNING}"
