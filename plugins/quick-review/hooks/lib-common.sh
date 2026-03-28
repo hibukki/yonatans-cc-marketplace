@@ -41,7 +41,7 @@ run_agent_review() {
   )
   local exit_code=$?
   local output
-  output=$(cat "$review_file" 2>/dev/null || echo "NO REVIEW OUTPUT")
+  output=$(cat "$review_file" 2>/dev/null || true)
   rm -f "$review_file"
 
   if [[ $exit_code -ne 0 ]]; then
