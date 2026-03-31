@@ -18,12 +18,17 @@ find_path=$(echo "$command" | sed 's/^[[:space:]]*find[[:space:]]*//' | awk '{pr
 
 [[ -n "$find_path" ]] || exit 0
 
-# Resolve the path
-resolved=$(realpath -m "$find_path" 2>/dev/null || echo "$find_path")
+# Portable realpath -m: resolve path without requiring it to exist
+resolve_path() {
+  local p="$1"
+  [[ "$p" != /* ]] && p="$PWD/$p"
+  python3 -c "import os,sys; print(os.path.normpath(sys.argv[1]))" "$p"
+}
+
+resolved=$(resolve_path "$find_path")
 
 # Extract worktree root
 worktree_root=$(echo "$PWD" | sed 's|^\(.*/.claude/worktrees/[^/]*\).*|\1|')
-worktree_root=$(realpath -m "$worktree_root" 2>/dev/null || echo "$worktree_root")
 
 # If inside worktree, fine
 [[ "$resolved" == "$worktree_root/"* || "$resolved" == "$worktree_root" ]] && exit 0

@@ -7,10 +7,16 @@ require_jq_or_exit
 # Only applies when running inside a worktree
 [[ "$PWD" == */.claude/worktrees/* ]] || exit 0
 
+# Portable realpath -m: resolve path without requiring it to exist
+resolve_path() {
+  local p="$1"
+  [[ "$p" != /* ]] && p="$PWD/$p"
+  python3 -c "import os,sys; print(os.path.normpath(sys.argv[1]))" "$p"
+}
+
 # Extract the worktree root: everything up to and including the worktree name
 # e.g. /Users/foo/project/.claude/worktrees/eager-hypatia-14828
 worktree_root=$(echo "$PWD" | sed 's|^\(.*/.claude/worktrees/[^/]*\).*|\1|')
-worktree_root=$(realpath -m "$worktree_root" 2>/dev/null || echo "$worktree_root")
 
 input=$(cat)
 target_path=$(echo "$input" | jq -r '.tool_input.path // .tool_input.file_path // ""')
@@ -18,8 +24,8 @@ target_path=$(echo "$input" | jq -r '.tool_input.path // .tool_input.file_path /
 # No path specified (defaults to cwd) — that's fine
 [[ -n "$target_path" ]] || exit 0
 
-# Resolve symlinks and ".." to prevent traversal bypass
-resolved=$(realpath -m "$target_path" 2>/dev/null || echo "$target_path")
+# Resolve ".." to prevent traversal bypass
+resolved=$(resolve_path "$target_path")
 
 # If the resolved path is inside this worktree, it's fine
 [[ "$resolved" == "$worktree_root/"* || "$resolved" == "$worktree_root" ]] && exit 0
