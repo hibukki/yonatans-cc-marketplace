@@ -1,4 +1,4 @@
-Review the current branch using `git diff $(git merge-base origin/$DEFAULT_BRANCH HEAD)..HEAD`.
+Review the diff provided below. It shows the changes on this branch vs origin/$DEFAULT_BRANCH (or a single commit if on $DEFAULT_BRANCH).
 
 User messages sent while working on this feature (some of them might not make sense without more context, but hopefully some will):
 

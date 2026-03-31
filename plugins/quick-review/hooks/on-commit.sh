@@ -51,8 +51,31 @@ count_commit_changes() {
 # Build review prompt from template + substitutions
 DEFAULT_BRANCH=$(get_default_branch)
 USER_QUOTES=$(extract_user_quotes "$INPUT")
+
+# Compute the diff inline so the reviewer doesn't need Bash
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
+if [[ "$CURRENT_BRANCH" == "$DEFAULT_BRANCH" ]]; then
+  # On main: just show the last commit
+  DIFF_CONTENT=$(git show "$COMMIT_SHA" 2>/dev/null || echo "[Could not get commit diff]")
+else
+  # On a branch: show only this branch's changes vs main
+  MERGE_BASE=$(git merge-base "origin/$DEFAULT_BRANCH" HEAD 2>/dev/null || true)
+  if [[ -n "$MERGE_BASE" ]]; then
+    DIFF_CONTENT=$(git diff "$MERGE_BASE"..HEAD 2>/dev/null || echo "[Could not get branch diff]")
+  else
+    # Fallback if origin/main doesn't exist
+    DIFF_CONTENT=$(git show "$COMMIT_SHA" 2>/dev/null || echo "[Could not get commit diff]")
+  fi
+fi
+
 REVIEW_PROMPT=$(DEFAULT_BRANCH="$DEFAULT_BRANCH" USER_QUOTES="$USER_QUOTES" \
   envsubst '$DEFAULT_BRANCH $USER_QUOTES' < "$SCRIPT_DIR/review-prompt.md")
+
+REVIEW_PROMPT="$REVIEW_PROMPT
+
+<diff branch=\"$CURRENT_BRANCH\">
+$DIFF_CONTENT
+</diff>"
 
 LARGE_COMMIT_WARNING=""
 if command -v bc &>/dev/null; then
