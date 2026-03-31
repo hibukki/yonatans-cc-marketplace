@@ -44,11 +44,11 @@ run_agent_review() {
     agent_args+=(--allowedTools "$allowed_tools")
   fi
 
+  local exit_code=0
   (
     exec >/dev/null
     claude -p "$prompt" "${agent_args[@]}" > "$review_file" 2>"$stderr_file"
-  )
-  local exit_code=$?
+  ) || exit_code=$?
   local output
   output=$(cat "$review_file" 2>/dev/null || true)
   local stderr_output
