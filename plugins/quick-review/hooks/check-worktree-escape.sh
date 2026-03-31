@@ -7,13 +7,6 @@ require_jq_or_exit
 # Only applies when running inside a worktree
 [[ "$PWD" == */.claude/worktrees/* ]] || exit 0
 
-# Portable realpath -m: resolve path without requiring it to exist
-resolve_path() {
-  local p="$1"
-  [[ "$p" != /* ]] && p="$PWD/$p"
-  python3 -c "import os,sys; print(os.path.normpath(sys.argv[1]))" "$p"
-}
-
 # Extract the worktree root: everything up to and including the worktree name
 # e.g. /Users/foo/project/.claude/worktrees/eager-hypatia-14828
 worktree_root=$(echo "$PWD" | sed 's|^\(.*/.claude/worktrees/[^/]*\).*|\1|')

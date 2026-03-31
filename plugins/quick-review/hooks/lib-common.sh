@@ -1,5 +1,13 @@
 # lib-common.sh - sourced by hook scripts
 
+# Portable realpath -m: resolve path without requiring it to exist
+# (macOS doesn't ship GNU realpath, so we use python3)
+resolve_path() {
+  local p="$1"
+  [[ "$p" != /* ]] && p="$PWD/$p"
+  python3 -c "import os,sys; print(os.path.normpath(sys.argv[1]))" "$p"
+}
+
 # Exit silently if jq is not installed (avoids errors on every hook call)
 require_jq_or_exit() {
   command -v jq &>/dev/null || exit 0
