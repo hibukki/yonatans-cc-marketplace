@@ -37,17 +37,6 @@ if [[ -z "$COMMIT_SHA" ]]; then
   exit 0
 fi
 
-# Count total lines changed (insertions + deletions) in a commit
-count_commit_changes() {
-  local sha="$1"
-  git show --stat "$sha" 2>/dev/null \
-    | tail -1 \
-    | grep -oE '[0-9]+ insertion|[0-9]+ deletion' \
-    | grep -oE '[0-9]+' \
-    | paste -sd+ - \
-    | bc 2>/dev/null || echo "0"
-}
-
 # Build review prompt from template + substitutions
 DEFAULT_BRANCH=$(get_default_branch)
 USER_QUOTES=$(extract_user_quotes "$INPUT")
@@ -68,6 +57,22 @@ else
   fi
 fi
 
+# Cap diff size and compute warning before embedding
+MAX_DIFF_LINES=2000
+DIFF_LINE_COUNT=$(echo "$DIFF_CONTENT" | wc -l | tr -d ' ')
+if [[ "$DIFF_LINE_COUNT" -gt "$MAX_DIFF_LINES" ]]; then
+  DIFF_CONTENT=$(echo "$DIFF_CONTENT" | head -n "$MAX_DIFF_LINES")
+  DIFF_CONTENT="$DIFF_CONTENT
+[diff truncated, showing first $MAX_DIFF_LINES of $DIFF_LINE_COUNT lines]"
+fi
+
+LARGE_COMMIT_WARNING=""
+if [[ "$DIFF_LINE_COUNT" -gt "$BIG_COMMIT_THRESHOLD" ]]; then
+  LARGE_COMMIT_WARNING="
+
+Note: This was a large diff (${DIFF_LINE_COUNT} lines). Smaller, self-contained commits are easier to review."
+fi
+
 REVIEW_PROMPT=$(DEFAULT_BRANCH="$DEFAULT_BRANCH" USER_QUOTES="$USER_QUOTES" \
   envsubst '$DEFAULT_BRANCH $USER_QUOTES' < "$SCRIPT_DIR/review-prompt.md")
 
@@ -76,16 +81,6 @@ REVIEW_PROMPT="$REVIEW_PROMPT
 <diff branch=\"$CURRENT_BRANCH\">
 $DIFF_CONTENT
 </diff>"
-
-LARGE_COMMIT_WARNING=""
-if command -v bc &>/dev/null; then
-  DIFF_LINES=$(count_commit_changes "$COMMIT_SHA")
-  if [[ "$DIFF_LINES" -gt "$BIG_COMMIT_THRESHOLD" ]]; then
-    LARGE_COMMIT_WARNING="
-
-Note: This was a large commit (${DIFF_LINES} lines changed). Smaller, self-contained commits are easier to review."
-  fi
-fi
 
 run_and_deliver_review \
   "=== Branch review (after commit ${COMMIT_SHA}) ===" \
