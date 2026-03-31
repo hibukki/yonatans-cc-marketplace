@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Sync PostToolUse hook for git commits.
+# PostToolUse hook for git commits.
 # Runs the quick-reviewer agent and delivers via systemMessage (user-visible)
 # and additionalContext (Claude-visible).
 #
