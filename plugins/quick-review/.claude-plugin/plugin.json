@@ -1,6 +1,6 @@
 {
   "name": "quick-review",
-  "version": "0.5.294",
+  "version": "0.5.295",
   "description": "Auto-triggers a quick code review after git commits",
   "hooks": {
     "SessionStart": [
@@ -59,6 +59,10 @@
           {
             "type": "command",
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/check-worktree-find.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/check-worktree-cd.sh"
           }
         ]
       },

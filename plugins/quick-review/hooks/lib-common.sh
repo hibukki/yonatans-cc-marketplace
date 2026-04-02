@@ -88,8 +88,10 @@ $debug_msg"
   fi
 
   local output="$header
-
-${REVIEW}"
+<Review>
+${REVIEW}
+</Review>
+"
   if [[ -n "$footer" ]]; then
     output="$output
 
