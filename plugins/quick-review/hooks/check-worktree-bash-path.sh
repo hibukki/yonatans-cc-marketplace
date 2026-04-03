@@ -27,40 +27,29 @@ extract_path() {
     return
   fi
 
-  # grep/rg: extract paths from the end of the command (after all flags and pattern).
+  # grep/rg: check all path-like tokens (starting with / or .)
   # Handles: grep [-flags]... "pattern" path1 path2 | ...
   if [[ "$cmd" =~ ^[[:space:]]*(grep|rg)[[:space:]] ]]; then
-    # Strip everything after a pipe
     local before_pipe="${cmd%%|*}"
-    # Get the last whitespace-separated token — that's the file/dir path
-    local last_token
-    last_token=$(echo "$before_pipe" | awk '{print $NF}')
-    # Only treat it as a path if it starts with / or .
-    if [[ "$last_token" == /* || "$last_token" == .* ]]; then
-      echo "$last_token"
-    fi
+    # Print all tokens that look like paths
+    echo "$before_pipe" | tr ' ' '\n' | grep -E '^(/|\.)' || true
     return
   fi
 }
 
-target_path=$(extract_path "$command")
+target_paths=$(extract_path "$command")
 
-[[ -n "$target_path" ]] || exit 0
+[[ -n "$target_paths" ]] || exit 0
 
-resolved=$(resolve_path "$target_path")
-
-# Extract worktree root
+# Extract worktree root and base repo path
 worktree_root=$(echo "$PWD" | sed 's|^\(.*/.claude/worktrees/[^/]*\).*|\1|')
-
-# If inside worktree, fine
-[[ "$resolved" == "$worktree_root/"* || "$resolved" == "$worktree_root" ]] && exit 0
-
-# Extract base repo path
 base_repo=$(echo "$worktree_root" | sed 's|/\.claude/worktrees/.*||')
-
-# Only block access to the base repo — not unrelated paths
-[[ "$resolved" == "$base_repo/"* || "$resolved" == "$base_repo" ]] || exit 0
-
-# Extract the command name for the error message
 cmd_name=$(echo "$command" | awk '{print $1}')
-deny_with_reason "Please stay in the worktree. You're running in $worktree_root but \`$cmd_name\` targets $target_path"
+
+while IFS= read -r target_path; do
+  [[ -n "$target_path" ]] || continue
+  resolved=$(resolve_path "$target_path")
+  [[ "$resolved" == "$worktree_root/"* || "$resolved" == "$worktree_root" ]] && continue
+  [[ "$resolved" == "$base_repo/"* || "$resolved" == "$base_repo" ]] || continue
+  deny_with_reason "Please stay in the worktree. You're running in $worktree_root but \`$cmd_name\` targets $target_path"
+done <<< "$target_paths"
