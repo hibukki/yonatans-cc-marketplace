@@ -60,6 +60,7 @@ You might also have insight here after writing a draft of the plan, perhaps you'
 - Update from main and resolve conflicts if any. It is ok to ask the user questions about the conflicts (e.g if the commit history/intent isn't clear).
 - Push and open a PR
 - If the project has CI, wait for it: `gh pr checks <PR_NUMBER> --watch --fail-fast 2>&1 | tail -30`
+- After CI passes, read Claude CI's PR comment and address any feedback it raised.
 - If you made any changes, push and wait for CI again.
 - Consider which follow up tasks, if any, should become issues, and suggest them. Issues should mostly mention pain points (e.g a bug). It's ok to write "Proposed solution" but not "Solution/plan:" (leave it up to the dev to have judgement on how to solve it)
 - Consider if something didn't work well in the process/tools/dev-env/review-flows, and point them out to the user even if you can't easily come up with a fix.
