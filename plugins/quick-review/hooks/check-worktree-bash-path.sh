@@ -52,4 +52,5 @@ while IFS= read -r target_path; do
   [[ "$resolved" == "$worktree_root/"* || "$resolved" == "$worktree_root" ]] && continue
   [[ "$resolved" == "$base_repo/"* || "$resolved" == "$base_repo" ]] || continue
   deny_with_reason "Please stay in the worktree. You're running in $worktree_root but \`$cmd_name\` targets $target_path"
+  exit 0
 done <<< "$target_paths"
