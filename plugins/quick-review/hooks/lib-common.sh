@@ -104,17 +104,16 @@ $debug_msg"
 Review cost: \$${REVIEW_COST_USD}"
   fi
 
-  local output="$header
+  local review_body="$header
 <Review>
 ${REVIEW}
-</Review>
-${cost_line}"
+</Review>"
   if [[ -n "$footer" ]]; then
-    output="$output
+    review_body="$review_body
 
 $footer"
   fi
-  deliver_review "$output"
+  deliver_review_with_cost "$review_body" "$cost_line"
 }
 
 # Output a block decision for Stop hooks
@@ -162,6 +161,21 @@ deliver_review() {
     "hookSpecificOutput": {
       "hookEventName": "PostToolUse",
       "additionalContext": $msg
+    }
+  }'
+}
+
+# Like deliver_review but appends extra info (e.g. cost) only to systemMessage (user-visible).
+# Usage: deliver_review_with_cost "review body" "cost line"
+deliver_review_with_cost() {
+  local body="$1"
+  local cost_line="${2:-}"
+  local user_msg="${body}${cost_line}"
+  jq -n --arg user "$user_msg" --arg claude "$body" '{
+    "systemMessage": $user,
+    "hookSpecificOutput": {
+      "hookEventName": "PostToolUse",
+      "additionalContext": $claude
     }
   }'
 }
