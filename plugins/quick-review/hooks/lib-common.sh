@@ -47,16 +47,27 @@ run_agent_review() {
   local exit_code=0
   (
     exec >/dev/null
-    claude -p "$prompt" "${agent_args[@]}" > "$review_file" 2>"$stderr_file"
+    claude -p "$prompt" "${agent_args[@]}" --output-format json > "$review_file" 2>"$stderr_file"
   ) || exit_code=$?
-  local output
-  output=$(cat "$review_file" 2>/dev/null || true)
+  local raw_output
+  raw_output=$(cat "$review_file" 2>/dev/null || true)
   local stderr_output
   stderr_output=$(cat "$stderr_file" 2>/dev/null || true)
   rm -f "$review_file" "$stderr_file"
 
   # Try to extract session ID from stderr (UUID format)
   REVIEW_SESSION_ID=$(echo "$stderr_output" | grep -oE '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}' | head -1 || true)
+
+  # Extract cost and review text from JSON output
+  local output=""
+  REVIEW_COST_USD=""
+  if command -v jq &>/dev/null && echo "$raw_output" | jq -e '.[0]' &>/dev/null 2>&1; then
+    output=$(echo "$raw_output" | jq -r '.[] | select(.type == "result") | .result // empty' 2>/dev/null || true)
+    REVIEW_COST_USD=$(echo "$raw_output" | jq -r '.[] | select(.type == "result") | .total_cost_usd // empty' 2>/dev/null || true)
+  else
+    # Fallback: treat as plain text if JSON parsing fails
+    output="$raw_output"
+  fi
 
   if [[ $exit_code -ne 0 ]]; then
     REVIEW="ERROR (exit code $exit_code): $output"
@@ -87,11 +98,17 @@ $debug_msg"
     return
   fi
 
+  local cost_line=""
+  if [[ -n "${REVIEW_COST_USD:-}" && "$REVIEW_COST_USD" != "0" && "$REVIEW_COST_USD" != "null" ]]; then
+    cost_line="
+Review cost: \$${REVIEW_COST_USD}"
+  fi
+
   local output="$header
 <Review>
 ${REVIEW}
 </Review>
-"
+${cost_line}"
   if [[ -n "$footer" ]]; then
     output="$output
 
