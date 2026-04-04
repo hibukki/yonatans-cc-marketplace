@@ -9,53 +9,27 @@ After receiving automated review feedback, apply this framework to decide what t
 
 ## What to Fix
 
-**Fix these regardless of severity labels:**
-- Issues directly related to the code you changed
-- Problems in the feature you're implementing
-- Anything that makes the current PR less clean
-- "Minor" issues that take seconds to fix
-- "Deferrable" issues that are actually in-scope
+TL;DR: Valid problems that are in-scope.
 
-**The label doesn't matter.** If it's in the scope of your change and it's a valid point, fix it.
+For example:
 
-## What NOT to Fix
-
-**Don't scope-creep:**
-- Unrelated code that happens to be nearby
-- Pre-existing issues in files you touched
-- Suggestions that turn a small PR into a large refactor
-- "While you're here..." improvements to other features
-
-**Don't fix incorrect feedback:**
-- Comments where the reviewer misunderstood the change
-- Suggestions based on wrong assumptions
-- "Improvements" that would break intended behavior
-
-## Decision Framework
-
-For each review comment, ask:
-
-1. **Is it correct?** If the reviewer misunderstood, skip it.
-2. **Is it in scope?** If it's about the feature/change you're making, fix it.
-3. **Does the severity label matter?** No. "Minor" in-scope issues should still be fixed.
-
-## Example Responses
-
-**Fix:** "Minor: variable name could be clearer" → If it's in your changed code, rename it.
-
-**Fix:** "Tiny nit: missing newline at end of file" → Takes 2 seconds, do it.
-
-**Skip:** "While you're here, the function above could use better error handling" → Out of scope, different change.
-
-**Skip:** "This should use the new API pattern" → Out of scope if you're intentionally matching existing code.
-
-**Fix:** "There's duplicated logic between these two handlers" → If the duplication was introduced or made worse by your change, fix it.
-
-**Skip:** "These three files have similar parsing logic, consider extracting a shared utility" → Pre-existing duplication that wasn't made worse by your change. Out of scope.
+- A bug in the implementation: fix
+- Created code duplication: fix
+- Touched (called / edited) duplicated code: fix the DRY
+- A mistaken bug (the reviewer didn't understand the code): skip
+- A valid problem that doesn't happen in practice: If this problem could happen if the code around would change (e.g creating a component that could be called in a way that creates a bug but nobody calls it this way now): fix
+  - For example, an API that would break if called in some way but it isn't called in that way: we want our APIs to be robust
+- A pre-existing problem that wasn't touched by this code, e.g noticing a problem in an unrelated util: skip (don't scope creep)
+- A valid in-scope problem that is tiny and takes seconds to fix: fix
+  - if it takes a long time to fix: still fix. (the amount of work is not a factor, we want to keep the code we touched clean)
+- No SSOT (doesn't cause a bug) : this is a design problem, fix
+- There is another idea for a feature that might be good: probably out of scope, consider suggesting it to the user, perhaps as a follow-up
+- Changed a variable from containing only the user meetings to containing all meetings: is changing the variable name or tests about it in scope? yes, otherwise the incorrect name is a problem caused by this PR, definitely in scope
 
 ## Show Your Decisions
 
 Consider showing the user your decisions. For each review comment:
+
 1. Is it a valid problem?
 2. Is it in code that was touched?
 3. (If you want: how big is the fix. Though this shouldn't affect whether we do it.)
