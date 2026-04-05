@@ -27,7 +27,7 @@ fi
 # Reset write counter on commit
 # Export SESSION_ID so run_agent_review can persist the reviewer's session
 export SESSION_ID=$(echo "$INPUT" | jq -r '.session_id // empty')
-[[ -n "$SESSION_ID" && "$SESSION_ID" != "null" ]] && rm -f "/tmp/claude-writes-${SESSION_ID}"
+[[ -n "$SESSION_ID" && "$SESSION_ID" != "null" ]] && rm -f "${TMPDIR:-/tmp}/claude-writes-${SESSION_ID}"
 
 # Extract commit SHA from tool_response
 # Git outputs commits like "[main abc1234] commit message"
@@ -45,7 +45,7 @@ DEFAULT_BRANCH=$(get_default_branch)
 MSGCOUNT_FILE=""
 SKIP_MSGS=0
 if [[ -n "$SESSION_ID" && "$SESSION_ID" != "null" ]]; then
-  MSGCOUNT_FILE="/tmp/claude-reviewer-${SESSION_ID}-quick-reviewer.msgcount"
+  MSGCOUNT_FILE="${TMPDIR:-/tmp}/claude-reviewer-${SESSION_ID}-quick-reviewer.msgcount"
   SKIP_MSGS=$(cat "$MSGCOUNT_FILE" 2>/dev/null || echo 0)
 fi
 USER_QUOTES=$(extract_user_quotes "$INPUT" "$SKIP_MSGS")

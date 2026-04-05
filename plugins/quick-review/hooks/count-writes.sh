@@ -9,7 +9,7 @@ session_id=$(echo "$input" | jq -r '.session_id')
 
 [[ -z "$session_id" || "$session_id" == "null" ]] && exit 0
 
-COUNTER_FILE="/tmp/claude-writes-${session_id}"
+COUNTER_FILE="${TMPDIR:-/tmp}/claude-writes-${session_id}"
 
 count=0
 [[ -f "$COUNTER_FILE" ]] && count=$(cat "$COUNTER_FILE")

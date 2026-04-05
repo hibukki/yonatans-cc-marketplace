@@ -39,14 +39,14 @@ run_agent_review() {
   local prompt="$1"
   local agent="${2:-quick-reviewer}"
   local allowed_tools="${3:-}"
-  local review_file="/tmp/review-$$-${RANDOM}.txt"
-  local stderr_file="/tmp/review-stderr-$$-${RANDOM}.txt"
+  local review_file="${TMPDIR:-/tmp}/review-$$-${RANDOM}.txt"
+  local stderr_file="${TMPDIR:-/tmp}/review-stderr-$$-${RANDOM}.txt"
 
   # Check for a persisted reviewer session to resume
   local sid_file=""
   local reviewer_session_id=""
   if [[ -n "${SESSION_ID:-}" ]]; then
-    sid_file="/tmp/claude-reviewer-${SESSION_ID}-${agent}.sid"
+    sid_file="${TMPDIR:-/tmp}/claude-reviewer-${SESSION_ID}-${agent}.sid"
     reviewer_session_id=$(cat "$sid_file" 2>/dev/null || true)
   fi
 
@@ -73,8 +73,8 @@ run_agent_review() {
   if [[ $exit_code -ne 0 && -n "$reviewer_session_id" && -n "$sid_file" ]]; then
     rm -f "$sid_file"
     reviewer_session_id=""
-    review_file="/tmp/review-$$-${RANDOM}.txt"
-    stderr_file="/tmp/review-stderr-$$-${RANDOM}.txt"
+    review_file="${TMPDIR:-/tmp}/review-$$-${RANDOM}.txt"
+    stderr_file="${TMPDIR:-/tmp}/review-stderr-$$-${RANDOM}.txt"
     exit_code=0
     (
       exec >/dev/null
