@@ -143,8 +143,7 @@ Review cost: \$${REVIEW_COST_USD}"
     local cache_total=$((cache_read + cache_created))
     if [[ "$cache_total" -gt 0 ]]; then
       local pct_read=$((cache_read * 100 / cache_total))
-      local pct_created=$((100 - pct_read))
-      cost_line="${cost_line} | Cache: ${pct_read}% read, ${pct_created}% created"
+      cost_line="${cost_line} | Cache reads: ${pct_read}%"
     fi
   fi
 
