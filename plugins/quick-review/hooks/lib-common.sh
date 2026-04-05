@@ -178,21 +178,27 @@ get_default_branch() {
   echo "${branch:-main}"
 }
 
-# Extract all user text messages from the transcript.
-# Usage: extract_user_quotes "$INPUT_JSON"
-# Reads transcript_path from the input JSON, extracts all user messages.
+# Extract user text messages from the transcript.
+# Usage: extract_user_quotes "$INPUT_JSON" [skip_count]
+#   skip_count: number of leading user messages to skip (for resumed sessions)
+# Also sets USER_MSG_COUNT to the total number of user messages found.
 extract_user_quotes() {
   local input="$1"
+  local skip="${2:-0}"
   local transcript
   transcript=$(echo "$input" | jq -r '.transcript_path // empty')
   if [[ -z "$transcript" || ! -f "$transcript" ]]; then
+    USER_MSG_COUNT=0
     echo ""
     return
   fi
-  jq -s '[.[] | select(.type == "user") | .message.content |
+  local all_msgs
+  all_msgs=$(jq -s '[.[] | select(.type == "user") | .message.content |
     if type == "array" then
       [.[] | select(.type == "text") | .text] | join("")
-    else . end // ""] | join("\n---\n")' -r "$transcript" 2>/dev/null || true
+    else . end // ""]' -r "$transcript" 2>/dev/null || true)
+  USER_MSG_COUNT=$(echo "$all_msgs" | jq 'length' 2>/dev/null || echo 0)
+  echo "$all_msgs" | jq -r ".[$skip:] | join(\"\\n---\\n\")" 2>/dev/null || true
 }
 
 # Output hook JSON to deliver a review visible to both user and Claude.

@@ -40,7 +40,15 @@ fi
 
 # Build review prompt from template + substitutions
 DEFAULT_BRANCH=$(get_default_branch)
-USER_QUOTES=$(extract_user_quotes "$INPUT")
+
+# On resumed sessions, only send new user messages the reviewer hasn't seen
+MSGCOUNT_FILE=""
+SKIP_MSGS=0
+if [[ -n "$SESSION_ID" && "$SESSION_ID" != "null" ]]; then
+  MSGCOUNT_FILE="/tmp/claude-reviewer-${SESSION_ID}-quick-reviewer.msgcount"
+  SKIP_MSGS=$(cat "$MSGCOUNT_FILE" 2>/dev/null || echo 0)
+fi
+USER_QUOTES=$(extract_user_quotes "$INPUT" "$SKIP_MSGS")
 
 # Compute the diff inline so the reviewer doesn't need Bash
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
@@ -88,3 +96,8 @@ run_and_deliver_review \
   "$REVIEW_PROMPT" \
   "quick-reviewer" \
   "Remember the /prioritize-review-comments skill.${LARGE_COMMIT_WARNING}"
+
+# Save message count so next resumed review only sends new messages
+if [[ -n "$MSGCOUNT_FILE" && -n "${USER_MSG_COUNT:-}" ]]; then
+  echo "$USER_MSG_COUNT" > "$MSGCOUNT_FILE"
+fi
