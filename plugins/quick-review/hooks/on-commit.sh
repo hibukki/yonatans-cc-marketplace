@@ -25,7 +25,8 @@ if ! echo "$COMMAND" | grep -qE '(^|[[:space:]])git[[:space:]].*commit([[:space:
 fi
 
 # Reset write counter on commit
-SESSION_ID=$(echo "$INPUT" | jq -r '.session_id // empty')
+# Export SESSION_ID so run_agent_review can persist the reviewer's session
+export SESSION_ID=$(echo "$INPUT" | jq -r '.session_id // empty')
 [[ -n "$SESSION_ID" && "$SESSION_ID" != "null" ]] && rm -f "/tmp/claude-writes-${SESSION_ID}"
 
 # Extract commit SHA from tool_response

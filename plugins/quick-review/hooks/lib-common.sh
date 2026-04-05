@@ -28,10 +28,13 @@ deny_with_reason() {
 
 # Run a claude agent review in an isolated subshell.
 # Captures output to a temp file to prevent claude stdout from corrupting hook JSON.
+# If SESSION_ID is set (exported by caller), persists the reviewer's session ID
+# in /tmp so subsequent reviews use --resume for context accumulation.
 # Usage: run_agent_review "prompt" [agent_name] [allowed_tools]
 #   agent_name defaults to "quick-reviewer"
 #   allowed_tools is optional (e.g. "Read,Grep,Glob")
-# Output: sets REVIEW variable with review text (or error message)
+# Output: sets REVIEW, REVIEW_SESSION_ID, REVIEW_COST_USD,
+#         REVIEW_CACHE_CREATION, REVIEW_CACHE_READ variables
 run_agent_review() {
   local prompt="$1"
   local agent="${2:-quick-reviewer}"
@@ -39,34 +42,67 @@ run_agent_review() {
   local review_file="/tmp/review-$$-${RANDOM}.txt"
   local stderr_file="/tmp/review-stderr-$$-${RANDOM}.txt"
 
-  local agent_args=(--agent "$agent")
+  # Check for a persisted reviewer session to resume
+  local sid_file=""
+  local reviewer_session_id=""
+  if [[ -n "${SESSION_ID:-}" ]]; then
+    sid_file="/tmp/claude-reviewer-${SESSION_ID}-${agent}.sid"
+    reviewer_session_id=$(cat "$sid_file" 2>/dev/null || true)
+  fi
+
+  local claude_args=()
+  if [[ -n "$reviewer_session_id" ]]; then
+    claude_args+=(--resume "$reviewer_session_id")
+  else
+    claude_args+=(--agent "$agent")
+  fi
   if [[ -n "$allowed_tools" ]]; then
-    agent_args+=(--allowedTools "$allowed_tools")
+    claude_args+=(--allowedTools "$allowed_tools")
   fi
 
   local exit_code=0
   (
     exec >/dev/null
-    claude -p "$prompt" "${agent_args[@]}" --output-format json > "$review_file" 2>"$stderr_file"
+    claude -p "$prompt" "${claude_args[@]}" --output-format json > "$review_file" 2>"$stderr_file"
   ) || exit_code=$?
   local raw_output
   raw_output=$(cat "$review_file" 2>/dev/null || true)
-  local stderr_output
-  stderr_output=$(cat "$stderr_file" 2>/dev/null || true)
   rm -f "$review_file" "$stderr_file"
 
-  # Try to extract session ID from stderr (UUID format)
-  REVIEW_SESSION_ID=$(echo "$stderr_output" | grep -oE '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}' | head -1 || true)
+  # If --resume failed, delete session file and retry fresh
+  if [[ $exit_code -ne 0 && -n "$reviewer_session_id" && -n "$sid_file" ]]; then
+    rm -f "$sid_file"
+    reviewer_session_id=""
+    review_file="/tmp/review-$$-${RANDOM}.txt"
+    stderr_file="/tmp/review-stderr-$$-${RANDOM}.txt"
+    exit_code=0
+    (
+      exec >/dev/null
+      claude -p "$prompt" --agent "$agent" ${allowed_tools:+--allowedTools "$allowed_tools"} --output-format json > "$review_file" 2>"$stderr_file"
+    ) || exit_code=$?
+    raw_output=$(cat "$review_file" 2>/dev/null || true)
+    rm -f "$review_file" "$stderr_file"
+  fi
 
-  # Extract cost and review text from JSON output
+  # Extract cost, cache stats, session ID, and review text from JSON output
   local output=""
   REVIEW_COST_USD=""
+  REVIEW_CACHE_CREATION=""
+  REVIEW_CACHE_READ=""
+  REVIEW_SESSION_ID=""
   if command -v jq &>/dev/null && echo "$raw_output" | jq -e '.[0]' &>/dev/null 2>&1; then
     output=$(echo "$raw_output" | jq -r '.[] | select(.type == "result") | .result // empty' 2>/dev/null || true)
     REVIEW_COST_USD=$(echo "$raw_output" | jq -r '.[] | select(.type == "result") | .total_cost_usd // empty' 2>/dev/null || true)
+    REVIEW_SESSION_ID=$(echo "$raw_output" | jq -r '.[] | select(.type == "result") | .session_id // empty' 2>/dev/null || true)
+    REVIEW_CACHE_CREATION=$(echo "$raw_output" | jq -r '.[] | select(.type == "result") | .usage.cache_creation_input_tokens // empty' 2>/dev/null || true)
+    REVIEW_CACHE_READ=$(echo "$raw_output" | jq -r '.[] | select(.type == "result") | .usage.cache_read_input_tokens // empty' 2>/dev/null || true)
   else
-    # Fallback: treat as plain text if JSON parsing fails
     output="$raw_output"
+  fi
+
+  # Persist reviewer session ID for next review
+  if [[ -n "$sid_file" && -n "$REVIEW_SESSION_ID" && "$REVIEW_SESSION_ID" != "null" ]]; then
+    echo "$REVIEW_SESSION_ID" > "$sid_file"
   fi
 
   if [[ $exit_code -ne 0 ]]; then
@@ -102,6 +138,9 @@ $debug_msg"
   if [[ -n "${REVIEW_COST_USD:-}" && "$REVIEW_COST_USD" != "0" && "$REVIEW_COST_USD" != "null" ]]; then
     cost_line="
 Review cost: \$${REVIEW_COST_USD}"
+    if [[ -n "${REVIEW_CACHE_READ:-}" && "$REVIEW_CACHE_READ" != "0" && "$REVIEW_CACHE_READ" != "null" ]]; then
+      cost_line="${cost_line} | Cache: ${REVIEW_CACHE_READ} read / ${REVIEW_CACHE_CREATION:-0} created"
+    fi
   fi
 
   local review_body="$header
