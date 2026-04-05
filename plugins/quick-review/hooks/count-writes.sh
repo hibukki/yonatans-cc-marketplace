@@ -15,6 +15,7 @@ count=0
 [[ -f "$COUNTER_FILE" ]] && count=$(cat "$COUNTER_FILE")
 count=$((count + 1))
 echo "$count" > "$COUNTER_FILE"
+# TODO: consider making the threshold configurable
 
 if [[ "$count" -eq 5 ]]; then
   cat <<'EOF'
