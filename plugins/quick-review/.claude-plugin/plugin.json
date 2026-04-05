@@ -1,6 +1,6 @@
 {
   "name": "quick-review",
-  "version": "0.5.312",
+  "version": "0.5.313",
   "description": "Auto-triggers a quick code review after git commits",
   "hooks": {
     "SessionStart": [
