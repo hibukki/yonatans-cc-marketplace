@@ -138,8 +138,13 @@ $debug_msg"
   if [[ -n "${REVIEW_COST_USD:-}" && "$REVIEW_COST_USD" != "0" && "$REVIEW_COST_USD" != "null" ]]; then
     cost_line="
 Review cost: \$${REVIEW_COST_USD}"
-    if [[ -n "${REVIEW_CACHE_READ:-}" && "$REVIEW_CACHE_READ" != "0" && "$REVIEW_CACHE_READ" != "null" ]]; then
-      cost_line="${cost_line} | Cache: ${REVIEW_CACHE_READ} read / ${REVIEW_CACHE_CREATION:-0} created"
+    local cache_read="${REVIEW_CACHE_READ:-0}"
+    local cache_created="${REVIEW_CACHE_CREATION:-0}"
+    local cache_total=$((cache_read + cache_created))
+    if [[ "$cache_total" -gt 0 ]]; then
+      local pct_read=$((cache_read * 100 / cache_total))
+      local pct_created=$((100 - pct_read))
+      cost_line="${cost_line} | Cache: ${pct_read}% read, ${pct_created}% created"
     fi
   fi
 
