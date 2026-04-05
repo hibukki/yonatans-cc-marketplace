@@ -1,4 +1,4 @@
-# lib-common.sh - sourced by hook scripts
+# lib-common.sh - shared utilities sourced by hook scripts
 
 # Portable realpath -m: resolve path without requiring it to exist
 # (macOS doesn't ship GNU realpath, so we use python3)
