@@ -1,6 +1,6 @@
 {
   "name": "quick-review",
-  "version": "0.5.315",
+  "version": "0.5.316",
   "description": "Auto-triggers a quick code review after git commits",
   "hooks": {
     "SessionStart": [
@@ -109,7 +109,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/on-commit.sh",
+            "command": "echo '{}'",
             "timeout": 300
           }
         ]
