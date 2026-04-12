@@ -123,7 +123,7 @@ run_and_deliver_review() {
   run_agent_review "$prompt" "$agent"
 
   if [[ -z "$REVIEW" ]]; then
-    local debug_msg="Bug in scaffolding: no output from reviewer ($agent)."
+    local debug_msg="Bug: Failed to run reviewer ($agent). Claude can choose to ask for a review if they want to."
     if [[ -n "${REVIEW_SESSION_ID:-}" ]]; then
       debug_msg="$debug_msg
 To debug: claude --resume $REVIEW_SESSION_ID"
