@@ -16,6 +16,21 @@ if [[ "$FILE_PATH" != "$HOME/.claude/plans/"*.md ]]; then
   exit 0
 fi
 
+# Track whether this is the first plan edit in this session
+SESSION_ID_RAW=$(echo "$INPUT" | jq -r '.session_id // empty')
+PLAN_REVIEW_FLAG="${TMPDIR:-/tmp}/plan-reviewed-${SESSION_ID_RAW}.flag"
+
+if [[ -n "$SESSION_ID_RAW" && -f "$PLAN_REVIEW_FLAG" ]]; then
+  # Already reviewed once this session — just give a hint
+  deliver_review "Tip: You can call the plan-reviewer agent again if you want an extra perspective on the plan changes."
+  exit 0
+fi
+
+# Mark that we've done the first auto-review
+if [[ -n "$SESSION_ID_RAW" ]]; then
+  touch "$PLAN_REVIEW_FLAG"
+fi
+
 # Read the plan content (the hook has access, the agent may not)
 PLAN_CONTENT=$(cat "$FILE_PATH" 2>/dev/null || echo "[Could not read plan file]")
 
