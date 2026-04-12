@@ -59,8 +59,9 @@ You might also have insight here after writing a draft of the plan, perhaps you'
 - If you still have open questions for the user, ask them now. Be in the mindset of "I want this PR to do one thing and do it well, be easy to review, correct, not add tech debt. Looking back at what I did, this is my opportunity to surface uncertainties to the user, any loose ends I can think of"
 - Update from main and resolve conflicts if any. It is ok to ask the user questions about the conflicts (e.g if the commit history/intent isn't clear).
 - Push and open a PR
+- Optionally run the codex reviewer if it's available and if the change wasn't trivial.
+- Run /simplify
+- If you made changes and want another review, you can call whichever reviewer you prefer up to 2 more times (then ask the user if you want more review rounds).
 - If the project has CI, wait for it: `gh pr checks <PR_NUMBER> --watch --fail-fast 2>&1 | tail -30`
-- After CI passes, read Claude CI's PR comment and address any feedback it raised.
-- If you made any changes, push and wait for CI again.
 - Consider which follow up tasks, if any, should become issues, and suggest them. Issues should mostly mention pain points (e.g a bug). It's ok to write "Proposed solution" but not "Solution/plan:" (leave it up to the dev to have judgement on how to solve it)
-- Consider if something didn't work well in the process/tools/dev-env/review-flows, and point them out to the user even if you can't easily come up with a fix.
+- Consider if something didn't work well in the process/tools/dev-env/review-flows, and point them out to the user even if you can't easily come up with a fix. If you ran the codex reviewer, please share what you thought about its comments, it's new
