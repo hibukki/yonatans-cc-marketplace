@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-exit 0; # TODO: Did disabling this work? is it still ok?
-
 source "$(dirname "$0")/lib-common.sh"
 require_jq_or_exit
 
