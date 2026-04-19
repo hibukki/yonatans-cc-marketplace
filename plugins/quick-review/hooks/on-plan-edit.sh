@@ -21,8 +21,7 @@ SESSION_ID_RAW=$(echo "$INPUT" | jq -r '.session_id // empty')
 PLAN_REVIEW_FLAG="/tmp/plan-reviewed-${SESSION_ID_RAW}.flag"
 
 if [[ -n "$SESSION_ID_RAW" && -f "$PLAN_REVIEW_FLAG" ]]; then
-  # Already reviewed once this session — just give a hint
-  deliver_review "Tip: You can call the plan-reviewer agent again if you want an extra perspective on the plan changes."
+  # Already reviewed once this session — stay silent to avoid spam.
   exit 0
 fi
 
@@ -53,4 +52,5 @@ run_and_deliver_review \
   "=== Plan review ===" \
   "$REVIEW_PROMPT" \
   "plan-reviewer" \
-  "Use the suggestions that are helpful. Discard wrong ones."
+  "Use the suggestions that are helpful. Discard wrong ones.
+This auto-review runs only once per session. To re-run it after further plan edits, invoke the plan-reviewer agent yourself via the Agent tool (subagent_type=\"plan-reviewer\")."
