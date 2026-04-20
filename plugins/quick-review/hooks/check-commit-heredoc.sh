@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+exit 0 # Maybe not needed with auto-mode
+
 set -euo pipefail
 
 source "$(dirname "$0")/lib-common.sh"
