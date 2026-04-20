@@ -32,6 +32,8 @@ if [[ "$last_assistant_text" == *"Ready to push?"* ]] || \
   exit 0
 fi
 
+exit 0 # Try without the question-hint starting opus 4.7, see how it goes
+
 # Check if it ends with "?" (but not "? " - trailing space is the escape hatch)
 if [[ "$last_assistant_text" == *"?" ]]; then
   stop_block "Consider using the AskUserQuestion tool to ask the user questions. You are getting this automated reminder because your last message ended with \"?\". You can avoid this reminder by ending with \"? \" (with a trailing space) if you intentionally want to end with a question mark without using AskUserQuestion."
