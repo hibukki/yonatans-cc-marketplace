@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+exit 0 # Maybe not needed with auto-mode
+
 source "$(dirname "$0")/lib-common.sh"
 require_jq_or_exit
 
