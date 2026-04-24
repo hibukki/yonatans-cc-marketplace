@@ -19,8 +19,8 @@ if [[ -n "$transcript_path" && -f "$transcript_path" ]]; then
            else . end // ""' -r 2>/dev/null || echo "")
 fi
 
-# Escape hatch: ending the message with <STOP/> bypasses all stop-hook logic
-if [[ "$last_assistant_text" =~ '<STOP/>'[[:space:]]*$ ]]; then
+# Escape hatch: <STOP/> anywhere in the last message bypasses all stop-hook logic
+if [[ "$last_assistant_text" == *"<STOP/>"* ]]; then
   stop_approve
   exit 0
 fi
@@ -41,7 +41,7 @@ fi
 
 # Check for uncommitted changes
 if [ -n "$(git status --porcelain 2>/dev/null)" ]; then
-  stop_block "There are uncommitted changes. Please commit, stash, gitignore, or whatever fits the situation. Also push (and open a PR) unless a more specific workflow was requested (e.g by the user / claude.md). If you intentionally want to stop without committing, end your next message with <STOP/> to bypass this reminder."
+  stop_block "There are uncommitted changes. Please commit, stash, gitignore, or whatever fits the situation. Also push (and open a PR) unless a more specific workflow was requested (e.g by the user / claude.md). If you intentionally want to stop without committing, include <STOP/> anywhere in your next message to bypass this reminder."
   exit 0
 fi
 
