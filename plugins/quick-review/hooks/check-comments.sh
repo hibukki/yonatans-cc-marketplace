@@ -8,20 +8,36 @@ input=$(cat)
 file_path=$(echo "$input" | jq -r '.tool_input.file_path // .tool_input.p // ""')
 new_text=$(echo "$input" | jq -r '.tool_input.new_string // .tool_input.content // ""')
 
-# Only check code files (skip markdown, yaml, toml, json, shell scripts)
-if [[ ! "$file_path" =~ \.(js|ts|jsx|tsx|py|go|java|c|cpp|h|hpp|rs|swift|kt)$ ]]; then
+is_code_file=0
+is_html_like_file=0
+if [[ "$file_path" =~ \.(js|ts|jsx|tsx|py|go|java|c|cpp|h|hpp|rs|swift|kt)$ ]]; then
+  is_code_file=1
+fi
+if [[ "$file_path" =~ \.(html|htm|vue|svelte|astro|md|mdx|jsx|tsx)$ ]]; then
+  is_html_like_file=1
+fi
+
+if [[ "$is_code_file" == "0" && "$is_html_like_file" == "0" ]]; then
   exit 0
 fi
 
 # Filter out shebangs and TS triple-slash directives
 filtered=$(echo "$new_text" | grep -vE "^#!" | grep -vE '^///[[:space:]]*<reference' || true)
 
-# Check for comment patterns
-has_double_slash=$(echo "$filtered" | grep -qE '//[[:space:]]*[[:alnum:]_]' && echo 1 || echo 0)
-has_hash=$(echo "$filtered" | grep -qE '#[[:space:]]*[[:alnum:]_]' && echo 1 || echo 0)
-has_block_start=$(echo "$filtered" | grep -qE '/\*' && echo 1 || echo 0)
-has_jsdoc_line=$(echo "$filtered" | grep -qE '^[[:space:]]*\*[[:space:]]+[[:alnum:]_]' && echo 1 || echo 0)
-has_html=$(echo "$filtered" | grep -qE '<!--' && echo 1 || echo 0)
+has_double_slash=0
+has_hash=0
+has_block_start=0
+has_jsdoc_line=0
+has_html=0
+if [[ "$is_code_file" == "1" ]]; then
+  has_double_slash=$(echo "$filtered" | grep -qE '//[[:space:]]*[[:alnum:]_]' && echo 1 || echo 0)
+  has_hash=$(echo "$filtered" | grep -qE '#[[:space:]]*[[:alnum:]_]' && echo 1 || echo 0)
+  has_block_start=$(echo "$filtered" | grep -qE '/\*' && echo 1 || echo 0)
+  has_jsdoc_line=$(echo "$filtered" | grep -qE '^[[:space:]]*\*[[:space:]]+[[:alnum:]_]' && echo 1 || echo 0)
+fi
+if [[ "$is_html_like_file" == "1" ]]; then
+  has_html=$(echo "$filtered" | grep -qE '<!--' && echo 1 || echo 0)
+fi
 
 if [[ "$has_double_slash" == "1" || "$has_hash" == "1" || "$has_block_start" == "1" || "$has_jsdoc_line" == "1" || "$has_html" == "1" ]]; then
   cat <<'EOF'
