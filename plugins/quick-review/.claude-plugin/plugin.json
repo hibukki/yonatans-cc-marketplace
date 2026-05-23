@@ -1,6 +1,6 @@
 {
   "name": "quick-review",
-  "version": "0.5.333",
+  "version": "0.5.334",
   "description": "Auto-triggers a quick code review after git commits",
   "hooks": {
     "SessionStart": [
@@ -83,6 +83,10 @@
           {
             "type": "command",
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/check-playwright-timeout.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/check-trailing-append.sh"
           },
           {
             "type": "command",
