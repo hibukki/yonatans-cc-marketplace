@@ -44,7 +44,7 @@ if [[ "$has_double_slash" == "1" || "$has_hash" == "1" || "$has_block_start" == 
 {
   "hookSpecificOutput": {
     "hookEventName": "PostToolUse",
-    "additionalContext": "This is an automated message for adding comments: Try to have variable/function names that don't require comments, if possible. Especially avoid repeating code-logic in comments (which might lead to comment rot). Comments explaining complex code (like examples for a regex) are still ok, but hopefully such complex code can be minimized. Links to relevant official docs are also ok. Advanced: Your intuition to add comments might indicate a code small that it would be good to fix or raise to the user. What do you think about the comments in this case? (this might require introspection)"
+    "additionalContext": "This is an automated message for adding comments: Try to have variable/function names that don't require comments, if possible. Especially avoid (1) repeating code-logic in comments (which might lead to comment rot), (2) in a comment on a variable/field, saying what code uses that field, (3) similarly, in a comment on a function, saying who calls that function (if we'd list all code that references x in a comment on x, that will definitely rot). Comments explaining complex code (like examples for a regex) are still ok, but hopefully such complex code can be minimized. Links to relevant official docs are also ok. Advanced: Your intuition to add comments *might indicate a code small* that it would be good to fix or raise to the user. What do you think about the comments in this case? (this might require introspection)"
   }
 }
 EOF
