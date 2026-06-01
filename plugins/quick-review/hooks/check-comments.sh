@@ -7,6 +7,7 @@ require_jq_or_exit
 input=$(cat)
 file_path=$(echo "$input" | jq -r '.tool_input.file_path // .tool_input.p // ""')
 new_text=$(echo "$input" | jq -r '.tool_input.new_string // .tool_input.content // ""')
+old_text=$(echo "$input" | jq -r '.tool_input.old_string // ""')
 
 is_code_file=0
 is_html_like_file=0
@@ -21,25 +22,31 @@ if [[ "$is_code_file" == "0" && "$is_html_like_file" == "0" ]]; then
   exit 0
 fi
 
-# Filter out shebangs and TS triple-slash directives
-filtered=$(echo "$new_text" | grep -vE "^#!" | grep -vE '^///[[:space:]]*<reference' || true)
-
-has_double_slash=0
-has_hash=0
-has_block_start=0
-has_jsdoc_line=0
-has_html=0
+comment_patterns=()
 if [[ "$is_code_file" == "1" ]]; then
-  has_double_slash=$(echo "$filtered" | grep -qE '//[[:space:]]*[[:alnum:]_]' && echo 1 || echo 0)
-  has_hash=$(echo "$filtered" | grep -qE '#[[:space:]]*[[:alnum:]_]' && echo 1 || echo 0)
-  has_block_start=$(echo "$filtered" | grep -qE '/\*' && echo 1 || echo 0)
-  has_jsdoc_line=$(echo "$filtered" | grep -qE '^[[:space:]]*\*[[:space:]]+[[:alnum:]_]' && echo 1 || echo 0)
+  comment_patterns+=('//[[:space:]]*[[:alnum:]_]')
+  comment_patterns+=('#[[:space:]]*[[:alnum:]_]')
+  comment_patterns+=('/\*')
+  comment_patterns+=('^[[:space:]]*\*[[:space:]]+[[:alnum:]_]')
 fi
 if [[ "$is_html_like_file" == "1" ]]; then
-  has_html=$(echo "$filtered" | grep -qE '<!--' && echo 1 || echo 0)
+  comment_patterns+=('<!--')
 fi
+combined_pattern=$(IFS='|'; echo "${comment_patterns[*]}")
 
-if [[ "$has_double_slash" == "1" || "$has_hash" == "1" || "$has_block_start" == "1" || "$has_jsdoc_line" == "1" || "$has_html" == "1" ]]; then
+# Count comment lines, ignoring shebangs and TS triple-slash directives
+count_comment_lines() {
+  echo "$1" \
+    | grep -vE "^#!" \
+    | grep -vE '^///[[:space:]]*<reference' \
+    | grep -cE "$combined_pattern" || true
+}
+
+new_count=$(count_comment_lines "$new_text")
+old_count=$(count_comment_lines "$old_text")
+
+# Only nudge when the edit adds more comment lines than it removes
+if (( new_count > old_count )); then
   cat <<'EOF'
 {
   "hookSpecificOutput": {
