@@ -1,6 +1,6 @@
 {
   "name": "quick-review",
-  "version": "0.5.335",
+  "version": "0.5.336",
   "description": "Auto-triggers a quick code review after git commits",
   "hooks": {
     "SessionStart": [
@@ -79,6 +79,10 @@
           {
             "type": "command",
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/check-comments.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/on-memory-write.sh"
           },
           {
             "type": "command",
