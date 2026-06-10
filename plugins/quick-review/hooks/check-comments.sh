@@ -47,28 +47,29 @@ old_count=$(count_comment_lines "$old_text")
 
 # Only nudge when the edit adds more comment lines than it removes
 if (( new_count > old_count )); then
-  cat <<'EOF'
-{
-  "hookSpecificOutput": {
-    "hookEventName": "PostToolUse",
-    "additionalContext": "This is an automated message for adding comments: 
-    Comments usually indicate a code smell, please introspect what is the case here.
+  message=$(cat <<'EOF'
+This is an automated message for adding comments:
+Comments usually indicate a code smell, please introspect what is the case here.
 
-    Good comments: 
-    - Reference official docs
-    - Give an example for a complex regex
-    - Security assumptions in the schema
-    Bad comments:
-    - List who currently uses this code or how (will rot)
-    - Summarize what the code below/elsewhere does (DRY, will rot)
-    - Open tasks (gh issue instead)
-    - Explain why we decided to make this change (goes in the PR description instead)
+Good comments:
+- Reference official docs
+- Give an example for a complex regex
+- Security assumptions in the schema
+Bad comments:
+- List who currently uses this code or how (will rot)
+- Summarize what the code below/elsewhere does (DRY, will rot)
+- Open tasks (gh issue instead)
+- Explain why we decided to make this change (goes in the PR description instead)
 
-    The project memory might have more examples.
-    
-    Which case is this one?
-    "
-  }
-}
+The project memory might have more examples.
+
+Which case is this one?
 EOF
+)
+  jq -n --arg msg "$message" '{
+    hookSpecificOutput: {
+      hookEventName: "PostToolUse",
+      additionalContext: $msg
+    }
+  }'
 fi
