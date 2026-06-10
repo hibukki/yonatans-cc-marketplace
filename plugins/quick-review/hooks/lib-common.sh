@@ -200,18 +200,22 @@ extract_user_quotes() {
   echo "$all_msgs" | jq -r ".[$skip:] | join(\"\\n---\\n\")" 2>/dev/null || true
 }
 
+# Output PostToolUse JSON adding context for Claude (not shown to the user)
+# Usage: post_tool_context "message"
+post_tool_context() {
+  jq -n --arg msg "$1" '{
+    hookSpecificOutput: {
+      hookEventName: "PostToolUse",
+      additionalContext: $msg
+    }
+  }'
+}
+
 # Output hook JSON to deliver a review visible to both user and Claude.
 # systemMessage = shown to user, additionalContext = shown to Claude.
 # Usage: deliver_review "Your review output here"
 deliver_review() {
-  local message="$1"
-  jq -n --arg msg "$message" '{
-    "systemMessage": $msg,
-    "hookSpecificOutput": {
-      "hookEventName": "PostToolUse",
-      "additionalContext": $msg
-    }
-  }'
+  deliver_review_with_cost "$1"
 }
 
 # Like deliver_review but appends extra info (e.g. cost) only to systemMessage (user-visible).

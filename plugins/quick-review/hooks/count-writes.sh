@@ -17,12 +17,5 @@ count=$((count + 1))
 echo "$count" > "$COUNTER_FILE"
 
 if [[ "$count" -eq 5 ]]; then
-  cat <<'EOF'
-{
-  "hookSpecificOutput": {
-    "hookEventName": "PostToolUse",
-    "additionalContext": "Reminder: commit small changes. Push encouraged (not to main)."
-  }
-}
-EOF
+  post_tool_context "Reminder: commit small changes. Push encouraged (not to main)."
 fi

@@ -14,12 +14,5 @@ if [[ ! "$file_path" =~ \.(js|ts|jsx|tsx)$ ]]; then
 fi
 
 if echo "$new_text" | grep -qE 'waitForTimeout'; then
-  cat <<'EOF'
-{
-  "hookSpecificOutput": {
-    "hookEventName": "PostToolUse",
-    "additionalContext": "This is an automated message for using waitForTimeout (or similar): This is usually a code smell in Playwright tests. Consider waiting for something meaningful instead, like an element becoming visible/hidden, a network request completing, or a URL change. What do you think — is there a more reliable wait condition available here?"
-  }
-}
-EOF
+  post_tool_context "This is an automated message for using waitForTimeout (or similar): This is usually a code smell in Playwright tests. Consider waiting for something meaningful instead, like an element becoming visible/hidden, a network request completing, or a URL change. What do you think — is there a more reliable wait condition available here?"
 fi

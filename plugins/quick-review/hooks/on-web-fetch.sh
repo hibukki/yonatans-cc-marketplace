@@ -1,13 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# PostToolUse output format: https://code.claude.com/docs/en/hooks
+source "$(dirname "$0")/lib-common.sh"
+require_jq_or_exit
 
-cat <<'EOF'
-{
-  "hookSpecificOutput": {
-    "hookEventName": "PostToolUse",
-    "additionalContext": "Tip: If WebFetch is filtering out info you want, you can download the entire webpage and launch a sub task to get info from that downloaded file. If that would be helpful, do it without asking the user for permission (unless the user indicated another preference)."
-  }
-}
-EOF
+post_tool_context "Tip: If WebFetch is filtering out info you want, you can download the entire webpage and launch a sub task to get info from that downloaded file. If that would be helpful, do it without asking the user for permission (unless the user indicated another preference)."

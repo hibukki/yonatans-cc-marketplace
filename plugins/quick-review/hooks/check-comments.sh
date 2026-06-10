@@ -66,10 +66,5 @@ The project memory might have more examples.
 Which case is this one?
 EOF
 )
-  jq -n --arg msg "$message" '{
-    hookSpecificOutput: {
-      hookEventName: "PostToolUse",
-      additionalContext: $msg
-    }
-  }'
+  post_tool_context "$message"
 fi
