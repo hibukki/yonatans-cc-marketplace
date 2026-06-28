@@ -38,8 +38,6 @@ The main plugin - enforces good development practices and automates code review.
 
 **Stack recommendations** - Tips for starting new projects (Vite+React, uv for Python, etc.) ([skill](plugins/quick-review/skills/new-project-good-stacks/SKILL.md))
 
-**Install guidance** - Ensures proper installation methods (CLI over manual edits, official docs over memorized instructions). ([skill](plugins/quick-review/skills/install/SKILL.md))
-
 ### plugin-security-reviews
 
 Security review for Claude Code plugins with auto-detection of new/changed plugins.
