@@ -2,7 +2,7 @@
 name: plan-reviewer
 description: |
   Use this agent to review a plan before implementation begins. This agent catches complexity, scope creep, and over-engineering before any code is written.
-model: opus
+model: fable
 color: yellow
 tools: ["Bash(git:*)", "Read", "Grep", "Glob"]
 ---
