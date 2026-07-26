@@ -39,13 +39,4 @@ if [[ -n "$last_assistant_text" ]] && \
   exit 0
 fi
 
-# Check for uncommitted changes
-if [ -n "$(git status --porcelain 2>/dev/null)" ]; then
-  # This doesn't seem to be working well w opus 4.7, so approving
-  stop_approve
-
-  stop_block "There are uncommitted changes. Please commit, stash, gitignore, or whatever fits the situation. Also push (and open a PR) unless a more specific workflow was requested (e.g by the user / claude.md). If you intentionally want to stop without committing, include <STOP/> anywhere in your next message to bypass this reminder."
-  exit 0
-fi
-
 stop_approve

@@ -10,8 +10,6 @@ The main plugin - enforces good development practices and automates code review.
 
 #### Code Review Workflow
 
-**Uncommitted changes block** - Don't let Claude ask the user questions if there are uncommitted changes.
-
 **Auto-review commits** - Claude's code gets reviewed automatically after each commit.
 
 **Review comment prioritization** - Framework for deciding which automated review comments to fix vs skip. ([skill](plugins/quick-review/skills/prioritize-review-comments/SKILL.md))
