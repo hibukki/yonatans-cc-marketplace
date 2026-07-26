@@ -1,6 +1,6 @@
 {
   "name": "quick-review",
-  "version": "0.5.351",
+  "version": "0.5.352",
   "description": "Auto-triggers a quick code review after git commits",
   "hooks": {
     "SessionStart": [
@@ -100,22 +100,6 @@
             "type": "command",
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/on-plan-edit.sh",
             "timeout": 300
-          },
-          {
-            "type": "agent",
-            "if": "Edit(*jumping-cats-test.md)",
-            "prompt": "You are a plan reviewer. Read the file that was just edited and review it for complexity and scope creep. Start by reading the file. Hook input: $ARGUMENTS",
-            "model": "claude-opus-4-6",
-            "timeout": 300,
-            "statusMessage": "Testing agent hook..."
-          },
-          {
-            "type": "agent",
-            "if": "Write(*jumping-cats-test.md)",
-            "prompt": "You are a plan reviewer. Read the file that was just edited and review it for complexity and scope creep. Start by reading the file. Hook input: $ARGUMENTS",
-            "model": "claude-opus-4-6",
-            "timeout": 300,
-            "statusMessage": "Testing agent hook..."
           }
         ]
       },
@@ -127,21 +111,10 @@
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/on-web-fetch.sh"
           }
         ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo '{}'",
-            "timeout": 300
-          }
-        ]
       }
     ],
     "Stop": [
       {
-        "matcher": "*",
         "hooks": [
           {
             "type": "command",
