@@ -40,10 +40,10 @@ For example, `hookify@claude-plugins-official` would be at:
 
 ### Step 3: Launch Parallel Security Scans
 
-For each plugin to scan (or a subset if user specified), launch a subagent using the Task tool:
+For each plugin to scan (or a subset if user specified), launch a subagent using the Agent tool:
 
 - Use `subagent_type: "general-purpose"`
-- Run all agents in parallel (single message with multiple Task tool calls)
+- Run all agents in parallel (single message with multiple Agent tool calls)
 - Use `run_in_background: true` so scans run asynchronously
 
 **Prompt template for each subagent:**
