@@ -25,10 +25,10 @@ if [[ "$last_assistant_text" == *"<STOP/>"* ]]; then
   exit 0
 fi
 
-# Check if message ends with "?" - remind to use AskUserQuestion
-question_check=$("$SCRIPT_DIR/check-question-ending.sh" <<< "$input")
-if echo "$question_check" | jq -e '.decision == "block"' >/dev/null 2>&1; then
-  echo "$question_check"
+# Asking permission to push/commit/open-a-PR
+if [[ -n "$last_assistant_text" ]] && \
+   echo "$last_assistant_text" | grep -qE 'Ready to (push|commit)\?|Want me to (push|create a PR)\?'; then
+  stop_block "It is always ok to commit/push/open-PR unless the user requested something else for this project"
   exit 0
 fi
 
