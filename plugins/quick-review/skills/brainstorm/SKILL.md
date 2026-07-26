@@ -5,12 +5,12 @@ description: This skill should be used when the user asks to "brainstorm", "find
 
 # Brainstorm Skill
 
-When the user wants to brainstorm, launch 3 subagents in parallel using the Task tool. Each agent explores the problem from a different perspective.
+When the user wants to brainstorm, launch 3 subagents in parallel using the Agent tool. Each agent explores the problem from a different perspective.
 
 ## How to Brainstorm
 
 1. Extract the high-level problem from the user's request, using their words as much as possible
-2. Launch all 3 agents in parallel (single message with 3 Task tool calls):
+2. Launch all 3 agents in parallel (single message with 3 Agent tool calls):
    - Use `subagent_type: "general-purpose"`
    - Use `model: "haiku"` for cost-effectiveness (exploratory work)
 3. Wait for all results
@@ -73,7 +73,7 @@ State what you'd insist on if this was your company.
 
 User: "Let's brainstorm how to add caching to the API"
 
-Launch 3 Task agents in parallel:
+Launch 3 agents in parallel:
 - Pain Points Analyst: Explores cache invalidation challenges, memory bounds, consistency scenarios to avoid
 - Minimal Code Advocate: Considers if a simple in-memory cache or existing library suffices
 - Battle-Seasoned CTO: Warns about cache stampedes, cold start issues, debugging complexity
