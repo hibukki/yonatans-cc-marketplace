@@ -5,7 +5,6 @@ SCRIPT_DIR="$(dirname "$0")"
 source "$SCRIPT_DIR/lib-common.sh"
 require_jq_or_exit
 
-# Read input early so we can pass it to sub-scripts
 input=$(cat)
 
 # Extract last assistant message text (reused by several checks below)
@@ -21,7 +20,6 @@ fi
 
 # Escape hatch: <STOP/> anywhere in the last message bypasses all stop-hook logic
 if [[ "$last_assistant_text" == *"<STOP/>"* ]]; then
-  stop_approve
   exit 0
 fi
 
@@ -38,5 +36,3 @@ if [[ -n "$last_assistant_text" ]] && \
   stop_block "Please prioritize comments not by whether they are blocking, but rather try to make the code we touch amazing (fixing problems even if they're small) (without going out of scope to problems unrelated to the PR/feature we're making because that would overflow to fixing the entire code). To prioritize comments, you can the skill: /prioritize-review-comments. You've got this!"
   exit 0
 fi
-
-stop_approve

@@ -159,15 +159,12 @@ $footer"
   deliver_review_with_cost "$review_body" "$cost_line"
 }
 
-# Output a block decision for Stop hooks
+# Output a block decision for Stop hooks.
+# To let the stop through instead, print nothing and exit 0 — "block" is the only
+# decision Stop hooks accept: https://code.claude.com/docs/en/hooks
 # Usage: stop_block "reason message"
 stop_block() {
   jq -n --arg reason "$1" '{"decision":"block","reason":$reason}'
-}
-
-# Output an approve decision for Stop hooks
-stop_approve() {
-  echo '{"decision":"approve"}'
 }
 
 # Detect the default branch (main or master)
