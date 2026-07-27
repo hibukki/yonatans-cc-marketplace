@@ -12,7 +12,7 @@
     {
       "name": "quick-review",
       "source": "./plugins/quick-review",
-      "description": "Yonatan's workflow, including async auto-reviews, comment reduction, and more",
+      "description": "Plan reviews, code-quality nudges, and guardrails",
       "category": "productivity"
     },
     {

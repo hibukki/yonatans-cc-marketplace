@@ -8,33 +8,47 @@ A Claude Code plugin marketplace with tools for better coding habits.
 
 The main plugin - enforces good development practices and automates code review.
 
-#### Code Review Workflow
+#### Review
 
-**Auto-review commits** - Claude's code gets reviewed automatically after each commit.
+**Plan review** - Review agent for plans, runs on the first plan file edit of a session. ([agent](plugins/quick-review/agents/plan-reviewer.md))
+
+**Manual review command** - `/quick-review` to trigger a code review on demand. ([agent](plugins/quick-review/agents/quick-reviewer.md))
 
 **Review comment prioritization** - Framework for deciding which automated review comments to fix vs skip. ([skill](plugins/quick-review/skills/prioritize-review-comments/SKILL.md))
 
-**Manual review command** - `/quick-review` to trigger a code review on demand.
-
-#### Planning
-
-**Plan review** - Review agent for plans, automatically executed after every plan file edit. ([agent](plugins/quick-review/agents/plan-reviewer.md))
-
 **Plan checklist** - Remind Claude to mention in the plan: small commits, a comprehensive TODO list, etc. ([skill](plugins/quick-review/skills/plan-checklist/SKILL.md))
 
-#### Code Quality
-
-**Comment quality check** - Reminds Claude that redundant comments are bad.
+#### Blocked outright
 
 **Package management** - Blocks editing package.json/pyproject.toml directly. Enforces `npm install` / `uv add`.
 
-#### Other
+**Worktree escape** - In a worktree, blocks reading and `cd`/`grep`/`find` back into the base repo.
+
+**Exiting plan mode** without a commit strategy in the plan.
+
+**Stopping** right after asking permission to push, or after reporting "no blocking comments". `<STOP/>` anywhere in the message bypasses both.
+
+#### Nudges
+
+**Comments** - Added comment lines prompt Claude to ask whether the comment will rot.
+
+**Memory rot** - Same question when writing to project memory.
+
+**`waitForTimeout`** - Suggests waiting for something meaningful in Playwright tests.
+
+**Trailing append** - Appending to the end of a list touches the previously-last line; suggests inserting earlier for a cleaner diff.
+
+**Commit small changes** - After 5 writes without a commit.
 
 **WebFetch tip** - Remind Claude it can download the file instead.
+
+#### Other
 
 **Brainstorm mode** - Multiple perspectives on a problem before deciding. ([skill](plugins/quick-review/skills/brainstorm/SKILL.md))
 
 **Stack recommendations** - Tips for starting new projects (Vite+React, uv for Python, etc.) ([skill](plugins/quick-review/skills/new-project-good-stacks/SKILL.md))
+
+**GitHub issues** - `/pick-up-github-issue` and `/triage-issues`.
 
 ### plugin-security-reviews
 
@@ -84,6 +98,9 @@ git config core.hooksPath .githooks
 ```
 
 This enables the pre-commit hook that auto-bumps the plugin version.
+
+Run the hook tests with `bash tests/run.sh`. Each case feeds a hook's stdin from
+`tests/cases/<hook>/<case>.in` and compares stdout against `<case>.out`.
 
 ## Other plugins that seem promising
 

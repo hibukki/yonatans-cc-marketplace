@@ -1,7 +1,7 @@
 {
   "name": "quick-review",
-  "version": "0.5.362",
-  "description": "Auto-triggers a quick code review after git commits",
+  "version": "0.5.363",
+  "description": "Plan reviews, code-quality nudges, and guardrails",
   "hooks": {
     "SessionStart": [
       {

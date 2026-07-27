@@ -55,7 +55,7 @@ You might also have insight here after writing a draft of the plan, perhaps you'
 
 ## 6. Add to the plan end
 
-- The on-commit hook automatically reviews the full branch after each commit. Use /prioritize-review-comments to address each review's suggestions.
+- Run /quick-review after committing, then /prioritize-review-comments to address its suggestions.
 - If you still have open questions for the user, ask them now. Be in the mindset of "I want this PR to do one thing and do it well, be easy to review, correct, not add tech debt. Looking back at what I did, this is my opportunity to surface uncertainties to the user, any loose ends I can think of"
 - Update from main and resolve conflicts if any. It is ok to ask the user questions about the conflicts (e.g if the commit history/intent isn't clear).
 - Push and open a PR
