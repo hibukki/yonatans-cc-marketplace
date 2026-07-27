@@ -1,0 +1,7 @@
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PreToolUse",
+    "permissionDecision": "deny",
+    "permissionDecisionReason": "Please stay in the worktree. You're running in __WORK_DIR__/base/.claude/worktrees/wt-1 but `cd` targets ../../../src"
+  }
+}

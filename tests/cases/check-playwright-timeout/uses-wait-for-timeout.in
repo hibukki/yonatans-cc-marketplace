@@ -1,0 +1,1 @@
+{"tool_input":{"file_path":"/proj/e2e/login.spec.ts","new_string":"await page.waitForTimeout(500)"}}

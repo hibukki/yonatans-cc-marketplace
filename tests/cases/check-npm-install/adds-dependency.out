@@ -1,0 +1,7 @@
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PreToolUse",
+    "permissionDecision": "deny",
+    "permissionDecisionReason": "Use `npm install <pkg>` or `pnpm add <pkg>` instead of editing package.json directly."
+  }
+}

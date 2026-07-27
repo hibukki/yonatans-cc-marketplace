@@ -1,0 +1,1 @@
+{"tool_name":"Write","tool_input":{"old_string":"[\n  1,\n  2\n]","new_string":"[\n  1,\n  2,\n  3\n]"}}

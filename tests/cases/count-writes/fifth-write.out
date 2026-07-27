@@ -1,0 +1,6 @@
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PostToolUse",
+    "additionalContext": "Reminder: commit small changes. Push encouraged (not to main)."
+  }
+}

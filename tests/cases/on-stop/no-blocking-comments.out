@@ -1,0 +1,4 @@
+{
+  "decision": "block",
+  "reason": "Please prioritize comments not by whether they are blocking, but rather try to make the code we touch amazing (fixing problems even if they're small) (without going out of scope to problems unrelated to the PR/feature we're making because that would overflow to fixing the entire code). To prioritize comments, you can the skill: /prioritize-review-comments. You've got this!"
+}

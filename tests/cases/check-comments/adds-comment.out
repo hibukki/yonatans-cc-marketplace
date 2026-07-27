@@ -1,0 +1,6 @@
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PostToolUse",
+    "additionalContext": "This is an automated message for adding comments:\nComments usually indicate a code smell, please introspect what is the case here.\n\nGood comments:\n- Reference official docs\n- Give an example for a complex regex\n- Security assumptions in the schema\nBad comments:\n- List who currently uses this code or how (will rot)\n- Summarize what the code below/elsewhere does (DRY, will rot)\n- Open tasks (gh issue instead)\n- Explain why we decided to make this change (goes in the PR description instead)\n\nThe project memory might have more examples.\n\nWhich case is this one?"
+  }
+}

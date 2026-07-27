@@ -1,0 +1,6 @@
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PostToolUse",
+    "additionalContext": "Tip: this edit appended a new item at the very end of a list/object/param list, so the previously-last line got a diff just to add ',\\n' to it. Consider inserting the new item BEFORE the last one (or earlier) — that keeps the diff to pure additions, no modification of an existing line. Ignore if order matters (e.g. positional arguments)."
+  }
+}

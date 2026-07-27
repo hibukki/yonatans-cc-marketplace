@@ -1,0 +1,1 @@
+{"tool_input":{"file_path":"/proj/pyproject.toml","new_string":"dependencies = [\"requests>=2.31\"]"}}

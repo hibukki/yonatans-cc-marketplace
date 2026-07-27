@@ -1,0 +1,6 @@
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PostToolUse",
+    "additionalContext": "This is an automated message for writing to memory: Please introspect — will this memory rot? For example: (1) TODOs go in GitHub issues instead. (2) Explanations about the code go in the repo, so all devs see + understand them."
+  }
+}
