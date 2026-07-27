@@ -13,6 +13,11 @@ require_jq_or_exit() {
   command -v jq &>/dev/null || exit 0
 }
 
+# Counter file behind the "commit small changes" nudge
+write_count_file() {
+  echo "${TMPDIR:-/tmp}/claude-writes-$1"
+}
+
 # Output a deny decision for PreToolUse hooks
 # Usage: deny_with_reason "reason message"
 deny_with_reason() {
