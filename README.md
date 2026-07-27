@@ -101,6 +101,15 @@ This enables the pre-commit hook that auto-bumps the plugin version.
 
 Run the hook tests with `bash tests/run.sh` (its header documents how to add a case).
 
+Editing this repo does not change the plugin you are running: hooks and agents load
+from the installed copy under `~/.claude/plugins/cache/`, which tracks the pushed
+version. To try changes before pushing, add the working tree as a local marketplace
+([docs](https://code.claude.com/docs/en/plugin-marketplaces)):
+
+```bash
+/plugin marketplace add ./
+```
+
 ## Other plugins that seem promising
 
 ### Search
