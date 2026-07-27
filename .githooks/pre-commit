@@ -1,12 +1,12 @@
 #!/bin/bash
-# Auto-bump patch version on every commit
+# Auto-bump the patch version of every plugin with staged changes
 
-PLUGIN_JSON="plugins/quick-review/.claude-plugin/plugin.json"
+for plugin_json in plugins/*/.claude-plugin/plugin.json; do
+  plugin_dir=$(dirname "$(dirname "$plugin_json")")
+  git diff --cached --quiet -- "$plugin_dir" && continue
 
-if [[ -f "$PLUGIN_JSON" ]]; then
-  # Bump patch version: 0.5.6 -> 0.5.7
   jq '.version |= (split(".") | .[2] |= (tonumber + 1 | tostring) | join("."))' \
-    "$PLUGIN_JSON" > "$PLUGIN_JSON.tmp" && mv "$PLUGIN_JSON.tmp" "$PLUGIN_JSON"
+    "$plugin_json" > "$plugin_json.tmp" && mv "$plugin_json.tmp" "$plugin_json"
 
-  git add "$PLUGIN_JSON"
-fi
+  git add "$plugin_json"
+done
