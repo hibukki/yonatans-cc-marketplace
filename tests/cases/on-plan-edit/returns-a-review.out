@@ -1,0 +1,7 @@
+{
+  "systemMessage": "=== Plan review ===\n<Review>\n1. ❌ Too complex.\n</Review>\n\nUse the suggestions that are helpful. Discard wrong ones.\nThis auto-review runs only once per session. To re-run it after further plan edits, invoke the plan-reviewer agent yourself via the Agent tool (subagent_type=\"plan-reviewer\").\nReview cost: $0.03 | Cache reads: 90%",
+  "hookSpecificOutput": {
+    "hookEventName": "PostToolUse",
+    "additionalContext": "=== Plan review ===\n<Review>\n1. ❌ Too complex.\n</Review>\n\nUse the suggestions that are helpful. Discard wrong ones.\nThis auto-review runs only once per session. To re-run it after further plan edits, invoke the plan-reviewer agent yourself via the Agent tool (subagent_type=\"plan-reviewer\")."
+  }
+}

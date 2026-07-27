@@ -9,7 +9,7 @@
 #                                       appended to the hook's, so a case can
 #                                       assert on state the hook changed
 #
-# The temp dir appears as __WORK_DIR__ in expected output.
+# __WORK_DIR__ stands for the temp dir in both the .in and the .out.
 set -uo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -39,7 +39,7 @@ for case_file in "$REPO_ROOT"/tests/cases/*/*.in; do
     before="${case_file%.in}.before.sh"
     after="${case_file%.in}.after.sh"
     [[ -f "$before" ]] && source "$before"
-    bash "$hook_script" < "$case_file"
+    sed "s|__WORK_DIR__|$work_dir|g" "$case_file" | bash "$hook_script"
     [[ -f "$after" ]] && source "$after"
   )
   rm -rf "$work_dir"

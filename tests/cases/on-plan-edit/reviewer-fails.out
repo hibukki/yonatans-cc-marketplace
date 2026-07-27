@@ -1,0 +1,7 @@
+{
+  "systemMessage": "=== Plan review ===\n<Review>\nERROR: the plan-reviewer reviewer returned no review (claude exit code 1).\nYou can launch the reviewer yourself if you want one.\n\nstderr:\n--agent 'plan-reviewer' not found.\n\nstdout:\n\n</Review>\n\nUse the suggestions that are helpful. Discard wrong ones.\nThis auto-review runs only once per session. To re-run it after further plan edits, invoke the plan-reviewer agent yourself via the Agent tool (subagent_type=\"plan-reviewer\").",
+  "hookSpecificOutput": {
+    "hookEventName": "PostToolUse",
+    "additionalContext": "=== Plan review ===\n<Review>\nERROR: the plan-reviewer reviewer returned no review (claude exit code 1).\nYou can launch the reviewer yourself if you want one.\n\nstderr:\n--agent 'plan-reviewer' not found.\n\nstdout:\n\n</Review>\n\nUse the suggestions that are helpful. Discard wrong ones.\nThis auto-review runs only once per session. To re-run it after further plan edits, invoke the plan-reviewer agent yourself via the Agent tool (subagent_type=\"plan-reviewer\")."
+  }
+}
