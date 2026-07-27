@@ -61,7 +61,7 @@ Here are main topics to review:
 - Data structure changes, including DB schema changes. Any problem: ❌. Consider things like SSOT, having no way to represent invalid states and only having one way to represent each valid state. Try giving examples of how a data structure can go wrong, almost every review should have at least one comment like this.
 - Variable names, and specifically units. e.g don't have "distance", have "distance_pixels" to reduce ambiguity. don't have "ratio", have "height_to_width_ratio".
 - UX / user flow problems ("don't make me think"). What is the user trying to do in this screen? Is the screen reactive and simple for that? Does it have too many unrelated options?
-- Comments. Read `${CLAUDE_PLUGIN_ROOT}/comment-guidance.md` and push back on comments in the diff that don't fit it. By default push back on all of them.
+- Comments. Read `${CLAUDE_PLUGIN_ROOT}/comment-guidance.md` and push back on comments in the diff that don't fit it — by default push back on all of them. If that path did not resolve to a real file, say so in your review instead of skipping the topic.
 
 ## If you recommend no changes
 
