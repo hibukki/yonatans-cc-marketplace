@@ -4,7 +4,11 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib-hash.sh"
 
-command -v jq &>/dev/null || exit 0
+if ! command -v jq &>/dev/null; then
+  echo ""
+  echo "**Warning:** jq is not installed, so plugin-security-reviews can't check for unreviewed plugins. Install with: brew install jq"
+  exit 0
+fi
 
 SETTINGS_FILE="$HOME/.claude/settings.json"
 PLUGIN_CACHE_DIR="$HOME/.claude/plugins/cache"

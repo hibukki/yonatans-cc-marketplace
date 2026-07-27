@@ -1,6 +1,6 @@
 {
   "name": "plugin-security-reviews",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Security review for Claude Code plugins with auto-detection of new/changed plugins",
   "hooks": {
     "SessionStart": [
