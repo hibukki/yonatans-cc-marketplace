@@ -4,6 +4,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib-hash.sh"
 
+command -v jq &>/dev/null || exit 0
+
 SETTINGS_FILE="$HOME/.claude/settings.json"
 PLUGIN_CACHE_DIR="$HOME/.claude/plugins/cache"
 CONFIG_FILE="$HOME/.claude/plugin-security-reviews.local.json"
