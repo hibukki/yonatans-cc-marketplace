@@ -12,4 +12,4 @@ echo "$command" | grep -qE '(^|[[:space:]])git[[:space:]].*commit([[:space:]]|$)
 session_id=$(echo "$input" | jq -r '.session_id // ""')
 [[ -n "$session_id" && "$session_id" != "null" ]] || exit 0
 
-rm -f "$(write_count_file "$session_id")"
+rm -f "$(commit_nudge_counter_file "$session_id")"

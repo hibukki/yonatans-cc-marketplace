@@ -13,8 +13,7 @@ require_jq_or_exit() {
   command -v jq &>/dev/null || exit 0
 }
 
-# Counter file behind the "commit small changes" nudge
-write_count_file() {
+commit_nudge_counter_file() {
   echo "${TMPDIR:-/tmp}/claude-writes-$1"
 }
 
@@ -33,8 +32,8 @@ deny_with_reason() {
 
 # Run a claude agent review in an isolated subshell.
 # Captures output to a temp file to prevent claude stdout from corrupting hook JSON.
-# `claude -p --output-format json` emits an array of events ending in a "result" event;
-# anything else means the review failed, and REVIEW then holds a loud error report.
+# Output format: https://code.claude.com/docs/en/cli-reference
+# With no "result" event to read, REVIEW holds a loud error report instead of a review.
 # Usage: run_agent_review "prompt" [agent_name]
 # Output: sets REVIEW, REVIEW_SESSION_ID, REVIEW_COST_USD,
 #         REVIEW_CACHE_CREATION, REVIEW_CACHE_READ variables
@@ -56,7 +55,7 @@ run_agent_review() {
   rm -f "$review_file" "$stderr_file"
 
   local result
-  result=$(echo "$raw_output" | jq -r 'if type == "array" then (.[] | select(.type == "result")) else empty end' 2>/dev/null || true)
+  result=$(echo "$raw_output" | jq -r '(if type == "array" then .[] else . end) | select(.type == "result")' 2>/dev/null || true)
 
   REVIEW=$(echo "$result" | jq -r '.result // empty' 2>/dev/null || true)
   REVIEW_COST_USD=$(echo "$result" | jq -r '.total_cost_usd // empty' 2>/dev/null || true)
