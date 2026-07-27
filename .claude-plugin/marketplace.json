@@ -12,19 +12,16 @@
     {
       "name": "quick-review",
       "source": "./plugins/quick-review",
-      "description": "Plan reviews, code-quality nudges, and guardrails",
       "category": "productivity"
     },
     {
       "name": "plugin-security-reviews",
       "source": "./plugins/plugin-security-reviews",
-      "description": "Security review for Claude Code plugins with auto-detection of new/changed plugins",
       "category": "security"
     },
     {
       "name": "google-workspace-connector",
       "source": "./plugins/google-workspace-connector",
-      "description": "Access Google Workspace APIs (Gmail, Drive, Sheets, Docs) via oauth2l + curl",
       "category": "productivity"
     }
   ]
