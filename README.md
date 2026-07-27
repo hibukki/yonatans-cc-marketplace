@@ -38,7 +38,7 @@ The main plugin - enforces good development practices and automates code review.
 
 **Trailing append** - Appending to the end of a list touches the previously-last line; suggests inserting earlier for a cleaner diff.
 
-**Commit small changes** - After 5 writes without a commit.
+**Commit small changes** - After several writes without a commit.
 
 **WebFetch tip** - Remind Claude it can download the file instead.
 
@@ -99,8 +99,7 @@ git config core.hooksPath .githooks
 
 This enables the pre-commit hook that auto-bumps the plugin version.
 
-Run the hook tests with `bash tests/run.sh`. Each case feeds a hook's stdin from
-`tests/cases/<hook>/<case>.in` and compares stdout against `<case>.out`.
+Run the hook tests with `bash tests/run.sh` (its header documents how to add a case).
 
 ## Other plugins that seem promising
 
