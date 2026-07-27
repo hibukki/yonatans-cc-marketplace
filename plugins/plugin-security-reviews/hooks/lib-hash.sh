@@ -24,3 +24,8 @@ is_plugin_reviewed() {
   review_file=$(get_review_file_path "$plugin_name" "$hash")
   [[ -f "$review_file" ]]
 }
+
+# Run directly to print one plugin's hash: lib-hash.sh <plugin_path>
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  compute_plugin_hash "$1"
+fi

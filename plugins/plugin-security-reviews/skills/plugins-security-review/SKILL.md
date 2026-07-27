@@ -94,9 +94,9 @@ After completing the review, save the results so the plugin won't be flagged as 
    mkdir -p ~/.claude/plugin-reviews
    ```
 
-2. **Compute the plugin hash** using this command:
+2. **Compute the plugin hash** with the same code the SessionStart hook uses, so the two always agree:
    ```bash
-   find {plugin_path} -type f -not -path '*/.git/*' -print0 | sort -z | xargs -0 cat 2>/dev/null | shasum -a 256 | cut -d' ' -f1
+   bash ${CLAUDE_PLUGIN_ROOT}/hooks/lib-hash.sh {plugin_path}
    ```
 
 3. **Save the review file** at `~/.claude/plugin-reviews/{plugin-name}-{hash}.json`:
