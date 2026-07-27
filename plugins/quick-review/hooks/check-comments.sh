@@ -47,24 +47,9 @@ old_count=$(count_comment_lines "$old_text")
 
 # Only nudge when the edit adds more comment lines than it removes
 if (( new_count > old_count )); then
-  message=$(cat <<'EOF'
-This is an automated message for adding comments:
-Comments usually indicate a code smell, please introspect what is the case here.
+  post_tool_context "This is an automated message about the comment lines this edit added.
 
-Good comments:
-- Reference official docs
-- Give an example for a complex regex
-- Security assumptions in the schema
-Bad comments:
-- List who currently uses this code or how (will rot)
-- Summarize what the code below/elsewhere does (DRY, will rot)
-- Open tasks (gh issue instead)
-- Explain why we decided to make this change (goes in the PR description instead)
+$(cat "$(dirname "$0")/../comment-guidance.md")
 
-The project memory might have more examples.
-
-Which case is this one?
-EOF
-)
-  post_tool_context "$message"
+The project memory might have more examples. Which case is this one?"
 fi

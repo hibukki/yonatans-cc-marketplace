@@ -1,6 +1,6 @@
 {
   "name": "quick-review",
-  "version": "0.5.363",
+  "version": "0.5.364",
   "description": "Plan reviews, code-quality nudges, and guardrails",
   "hooks": {
     "SessionStart": [
