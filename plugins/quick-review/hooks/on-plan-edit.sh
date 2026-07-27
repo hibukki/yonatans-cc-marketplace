@@ -18,7 +18,7 @@ fi
 
 # Track whether this is the first plan edit in this session
 SESSION_ID_RAW=$(echo "$INPUT" | jq -r '.session_id // empty')
-PLAN_REVIEW_FLAG="/tmp/plan-reviewed-${SESSION_ID_RAW}.flag"
+PLAN_REVIEW_FLAG="${TMPDIR:-/tmp}/plan-reviewed-${SESSION_ID_RAW}.flag"
 
 if [[ -n "$SESSION_ID_RAW" && -f "$PLAN_REVIEW_FLAG" ]]; then
   # Already reviewed once this session — stay silent to avoid spam.
