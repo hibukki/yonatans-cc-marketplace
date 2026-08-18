@@ -34,6 +34,10 @@ if [[ "$is_html_like_file" == "1" ]]; then
 fi
 combined_pattern=$(IFS='|'; echo "${comment_patterns[*]}")
 
+strip_yaml_frontmatter() {
+  awk 'NR==1 && $0=="---" { inside=1; next } inside && $0=="---" { inside=0; next } !inside'
+}
+
 # Count comment lines, ignoring shebangs and TS triple-slash directives
 count_comment_lines() {
   echo "$1" \
@@ -49,7 +53,7 @@ old_count=$(count_comment_lines "$old_text")
 if (( new_count > old_count )); then
   post_tool_context "This is an automated message about the comment lines this edit added.
 
-$(cat "$(dirname "$0")/../comment-guidance.md")
+$(strip_yaml_frontmatter < "$(dirname "$0")/../skills/comment-guidance/SKILL.md")
 
 The project memory might have more examples. Which case is this one?"
 fi

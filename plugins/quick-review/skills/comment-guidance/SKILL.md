@@ -1,3 +1,8 @@
+---
+name: comment-guidance
+description: Use this skill when writing, reviewing, or removing code comments — which comments are usually fine and which are a smell.
+---
+
 Hey Claude!
 So, it seems like comments are often a thing you add reflexively when you notice there is something wrong with the code. I'm writing this file, to be used as an attempt to help you introspect for what's wrong, listing some common reasons. I hope it will also be useful when reviewing other code. It also has some of my own preferences, for example I like referencing official docs when possible.
 

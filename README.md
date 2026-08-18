@@ -30,7 +30,7 @@ The main plugin - enforces good development practices and automates code review.
 
 #### Nudges
 
-**Comments** - Added comment lines prompt Claude to ask whether the comment will rot.
+**Comments** - Added comment lines prompt Claude to check them against the comment guidance, also invocable on demand. ([skill](plugins/quick-review/skills/comment-guidance/SKILL.md))
 
 **Memory rot** - Same question when writing to project memory.
 
