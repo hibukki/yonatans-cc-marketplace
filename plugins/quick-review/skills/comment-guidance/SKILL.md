@@ -12,7 +12,9 @@ Usually fine imo:
 
 - References official docs, making it easier for future devs (including you) to understand/verify something. e.g "This is Twilio's official recommended verification algorithm, see https://..". Often it's better to import types/sdk-functions directly but that's not always available.
 - An example for a complex regex (often better to use a built in regex, e.g .emailregex() , but we can't always)
-- Security assumptions, written on the schema field they apply to (same line, as close to the field as possible — above the table is further away and rots sooner). A good security assumption lists "// Readable by: .. , Writable by: ..", for example "by the current user", "by the app admins".
+- Security assumptions, written on the schema field they apply to (same line). A good security assumption lists "// Readable by: .. , Writable by: ..", for example "by the current user", "by the app admins".
+- A rule that constrains future edits, that the code can't enforce itself. e.g "point at rows that outlive this one; copy the field off rows that can be deleted". First try to make it structural — a type that makes the wrong thing not compile, a shared spread — and if that works, delete the comment.
+- A note whose death is already scheduled, e.g "legacy shape, empty after the drain migration" on a field the next PR deletes. It goes away with the code it describes, so it can't rot. This is the one exception to "says when it changes" below.
 
 Usually a smell:
 
@@ -23,5 +25,7 @@ Usually a smell:
 - An open task (reference a GitHub issue instead)
 - Why we made this change (the PR description instead)
 - What the code doesn't do (e.g "// Doesn't access the DB directly") - it would be silly if we'd list all the things the code doesn't do.
+
+Wherever a comment does survive: put it as close as possible to what it describes. Distance predicts rot — that's why a security assumption goes on the field and not above the table.
 
 If you can't see how to avoid a comment, I prefer if you say so and we'll think it through together.
