@@ -11,14 +11,19 @@ So,
 Usually fine imo:
 
 - References official docs, making it easier for future devs (including you) to understand/verify something. e.g "This is Twilio's official recommended verification algorithm, see https://..". Often it's better to import types/sdk-functions directly but that's not always available.
+- A "why" that leads with its question, so readers can skip it: "// Why snake_case keys: ..."
+- One line on why legacy code still exists: "// Obsolete (tracked in #123)"
 - An example for a complex regex (often better to use a built in regex, e.g .emailregex() , but we can't always)
 - Security assumptions, written on the schema field they apply to (same line, as close to the field as possible — above the table is further away and rots sooner). A good security assumption lists "// Readable by: .. , Writable by: ..", for example "by the current user", "by the app admins".
 
 Usually a smell:
 
+- Is about code far from it. Ask "which code is this comment about?": the same line is often fine, the next line maybe, anything farther rots when that code moves or is renamed. Rewording such a comment doesn't fix it.
 - Repeats what the code below it says (e.g "Adds `a` and `b`" just above "c=a+b")
 - Says who calls this code, or when it changes (rots) (e.g "this field is set by foo() when bar() happens")
 - Explains a name that could just be clearer
+- Names another module's identifier where the concept would do ("the account-wide email opt-in", not `users.isSubscribedToEmailNotifications`)
+- Describes how the code is invoked instead of its contract ("Runs on its own, so a failed send fails nothing else" → "Doesn't throw when X", or nothing if the type already says it)
 - Explains a feature (= explains logic implemented somewhere else. bad also in docs/readme)
 - An open task (reference a GitHub issue instead)
 - Why we made this change (the PR description instead)
