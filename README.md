@@ -22,8 +22,6 @@ The main plugin - enforces good development practices and automates code review.
 
 **Package management** - Blocks editing package.json/pyproject.toml directly. Enforces `npm install` / `uv add`.
 
-**Worktree escape** - In a worktree, blocks reading and `cd`/`grep`/`find` back into the base repo.
-
 **Exiting plan mode** without a commit strategy in the plan.
 
 **Stopping** right after asking permission to push, or after reporting "no blocking comments". `<STOP/>` anywhere in the message bypasses both.

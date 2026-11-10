@@ -1,6 +1,6 @@
 {
   "name": "quick-review",
-  "version": "0.5.373",
+  "version": "0.5.374",
   "description": "Plan reviews, code-quality nudges, and guardrails",
   "hooks": {
     "SessionStart": [
@@ -14,15 +14,6 @@
       }
     ],
     "PreToolUse": [
-      {
-        "matcher": "Grep|Glob|Read",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/check-worktree-escape.sh"
-          }
-        ]
-      },
       {
         "matcher": "Edit|Write",
         "hooks": [
@@ -42,15 +33,6 @@
           {
             "type": "command",
             "command": "echo '{\"additionalContext\": \"Tip: Use TodoWrite to break down the plan into trackable tasks.\"}'"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/check-worktree-bash-path.sh"
           }
         ]
       },
