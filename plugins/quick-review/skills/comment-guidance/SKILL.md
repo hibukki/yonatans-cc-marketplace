@@ -11,10 +11,10 @@ So,
 Usually fine imo:
 
 - References official docs, making it easier for future devs (including you) to understand/verify something. e.g "This is Twilio's official recommended verification algorithm, see https://..". Often it's better to import types/sdk-functions directly but that's not always available.
-- A "why" that leads with its question, so readers can skip it: "// Why snake_case keys: ..."
+- A "why" about a technical choice that leads with its question, so readers can skip it: "// Why snake_case keys: ...". Not a product or access policy ("Why an assigned editor is visible: everyone with access …"): the code that implements it says it, and the prose rots when the policy changes.
 - One line on why legacy code still exists: "// Obsolete (tracked in #123)"
 - An example for a complex regex (often better to use a built in regex, e.g .emailregex() , but we can't always)
-- Security assumptions, written on the schema field they apply to (same line, as close to the field as possible — above the table is further away and rots sooner). A good security assumption lists "// Readable by: .. , Writable by: ..", for example "by the current user", "by the app admins".
+- Security assumptions, written on the schema field they apply to (same line, as close to the field as possible — above the table is further away and rots sooner). A good security assumption lists "// Readable by: .. , Writable by: ..", for example "by the current user", "by the app admins". When both are the same group, one "Readable/writable by: …". Who, not how it gets written ("when they email the invite"): that is a code flow that can change, and the comment rots.
 
 Usually a smell:
 
@@ -27,6 +27,7 @@ Usually a smell:
 - Explains a feature (= explains logic implemented somewhere else. bad also in docs/readme)
 - An open task (reference a GitHub issue instead)
 - Why we made this change (the PR description instead)
+- Quotes or links the request (a Notion task, a teammate's words): that is the PR description's or the task's job
 - What the code doesn't do (e.g "// Doesn't access the DB directly") - it would be silly if we'd list all the things the code doesn't do.
 
 If you can't see how to avoid a comment, I prefer if you say so and we'll think it through together.
